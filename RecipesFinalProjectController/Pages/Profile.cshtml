@@ -1,0 +1,12 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p><strong>Name:</strong> @Model.User.FirstName @Model.User.LastName</p>
+<p><strong>Username:</strong> @Model.User.Username</p>
+<p><strong>Admin:</strong> @Model.User.IsAdmin</p>
+
+<a asp-page="/Logout">Logout</a>

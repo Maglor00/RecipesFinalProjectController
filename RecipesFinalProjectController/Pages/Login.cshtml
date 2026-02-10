@@ -1,0 +1,16 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" action="">
+    Username:<br />
+    <input type="text" name="Username" value="" /><br />
+    Password:<br />
+    <input type="text" name="Password" value="" /><br /><br />
+    <input type="submit" value="Submit" class="submit" />
+</form>
+
+<p style="color:red">@Model.ErrorMessage</p>
