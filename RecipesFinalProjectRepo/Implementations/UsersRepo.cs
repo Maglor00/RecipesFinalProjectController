@@ -14,7 +14,7 @@ namespace RecipesFinalProjectRepo.Implementations
         private readonly string _tableName = "Users";
         public Users Create(Users user)
         {
-            string sql = $"INSERT INTO {_tableName} (first_name, last, name, username, password, is_admin) " +
+            string sql = $"INSERT INTO {_tableName} (first_name, last_name, username, password, is_admin) " +
                 $"VALUES ('{user.FirstName}', '{user.LastName}', '{user.Username}', " +
                 $"'{user.Password}', '{user.IsAdmin}');";
             int id = SQL.ExecuteNonQuery(sql);

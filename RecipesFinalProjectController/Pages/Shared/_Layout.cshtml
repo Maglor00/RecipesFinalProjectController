@@ -40,7 +40,8 @@
                         @if (loggedInUser != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Profile">Profile</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Profile">
+                                    Profile (@loggedInUser.Username)</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
@@ -51,6 +52,9 @@
                             @*User is NOT logged in*@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                            </li>
+                            <li class="nav_item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Register">Register</a>
                             </li>
                         }
                     </ul>

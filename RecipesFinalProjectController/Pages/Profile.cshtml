@@ -3,10 +3,8 @@
 @{
     ViewData["Title"] = "Profile";
 }
-<h1>@ViewData["Title"]</h1>
+<h3>@ViewData["Title"]</h3>
 
-<p><strong>Name:</strong> @Model.User.FirstName @Model.User.LastName</p>
-<p><strong>Username:</strong> @Model.User.Username</p>
-<p><strong>Admin:</strong> @Model.User.IsAdmin</p>
+<p>Hello @Model.User.FirstName @Model.User.LastName</p>
 
 <a asp-page="/Logout">Logout</a>

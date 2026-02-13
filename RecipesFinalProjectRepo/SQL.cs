@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace RecipesFinalProjectRepo
     internal class SQL
     {
         const string connectionString = @"Server=localhost\SQLEXPRESS;Database=JD_TP_RC_Recipes;
-                                        Trusted_Connection=True;TrustedServerCertificate=False";
+                                        Trusted_Connection=True;TrustServerCertificate=True;";
 
         static SqlConnection conn = new SqlConnection(connectionString);
 
@@ -35,12 +36,12 @@ namespace RecipesFinalProjectRepo
         {
             PrepareConnection();
             SqlCommand sqlCommand = new SqlCommand(sql, conn);
-            return sqlCommand.ExecuteReader();
+            return sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
         }
 
-        private static void PrepareConnection()
+        public static void PrepareConnection()
         {
-            if(conn.State == System.Data.ConnectionState.Open)
+            if (conn.State != ConnectionState.Closed)
             {
                 conn.Close();
             }
