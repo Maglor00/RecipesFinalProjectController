@@ -45,6 +45,36 @@ namespace RecipesFinalProjectRepo.Implementations
             return recipes;
         }
 
+        public List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime)
+        {
+            string sql = $"SELECT Recipes.*, Categories.name AS category_name, " +
+                $"Difficulties.name AS difficulty_name FROM {_tableName}" +
+                $"JOIN Categories ON Recipes.category_id = Categories.id" +
+                $"JOIN Difficulties ON Recipes.difficulty_id = Difficulties.id WHERE Recipes.is_approved = 1";
+            
+            if (!string.IsNullOrEmpty(title))
+                sql += $"AND Recipes.title LIKE '%{title}'";
+
+            if (categoryId.HasValue)
+                sql += $"AND Recipes.category_id = {categoryId.Value}";
+
+            if (difficultyId.HasValue)
+                sql += $"AND Recipes.difficulty_id = {difficultyId.Value}";
+
+            if (maxTime.HasValue)
+                sql += $"AND Recipes.preparation_time <= {maxTime.Value}";
+
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+            List<Recipes> recipes = new List<Recipes> ();
+
+            while (dataReader.Read())
+            {
+                recipes.Add(Parse(dataReader));
+            }
+
+            return recipes;
+        }
+
         public Recipes Update(Recipes recipesToUpdate)
         {
             if (recipesToUpdate.Id <= 0) throw new Exception($"Recipe id {recipesToUpdate.Id} invalid");

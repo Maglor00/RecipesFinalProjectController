@@ -27,7 +27,18 @@ namespace RecipesFinalProjectController.Pages
         [BindProperty]
         public string Password { get; set; }
         public string ErrorMessage { get; set; }
-        
+
+        public IActionResult OnGet()
+        {
+            var userJson = HttpContext?.Session?.GetString("LoggedInUser");
+
+            if (!string.IsNullOrEmpty(userJson))
+            {
+                return RedirectToPage("/Profile");
+            }
+
+            return Page();
+        }
         public IActionResult OnPost()
         {
             try

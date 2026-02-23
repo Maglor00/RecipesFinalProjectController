@@ -1,0 +1,53 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.SearchModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" class="mb-4">
+
+    <input asp-for="Title" placeholder="Search title..." />
+
+    <select asp-for="CategoryId">
+        <option value="">All Categories</option>
+        @foreach (var cat in Model.Categories)
+        {
+            <option value="@cat.Id">@cat.Name</option>
+        }
+    </select>
+
+    <select asp-for="DifficultyId">
+        <option value="">All Difficulties</option>
+        @foreach (var diff in Model.Difficulties)
+        {
+            <option value="@diff.Id">@diff.Name</option>
+        }
+    </select>
+
+    <input asp-for="MaxTime" placeholder="Max Time (minutes)" />
+
+    <button type="submit">Search</button>
+
+</form>
+
+<hr />
+
+@foreach (var recipe in Model.Recipes)
+{
+    <div class="card mb-3 p-3">
+        <h4>@recipe.Title</h4>
+        <p><strong>Category:</strong> @recipe.Category.Name</p>
+        <p><strong>Difficulty:</strong> @recipe.Difficulty.Name</p>
+        <p><strong>Time:</strong> @recipe.PreparationTime minutes</p>
+
+        @if (Model.IsLoggedIn)
+        {
+            <form method="post">
+                <input type="hidden" name="RecipeId" value="@recipe.Id" />
+                <button type="submit">Add to Favorites</button>
+            </form>
+        }
+    </div>
+}

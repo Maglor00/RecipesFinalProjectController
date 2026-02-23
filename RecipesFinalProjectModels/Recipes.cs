@@ -10,6 +10,7 @@ namespace RecipesFinalProjectModels
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public IngredientLine IngredientLine { get; set; }
         public string PreparationMethod { get; set; }
         public double PreparationTime { get; set; }
         public Category Category { get; set; }

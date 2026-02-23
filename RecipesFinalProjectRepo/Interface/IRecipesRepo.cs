@@ -12,6 +12,7 @@ namespace RecipesFinalProjectRepo.Interface
         Recipes Create(Recipes recipes);
         Recipes Retrieve(int id);
         List<Recipes> RetrieveAll();
+        List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime);
         Recipes Update(Recipes recipes);
         void Delete(int id);
     }

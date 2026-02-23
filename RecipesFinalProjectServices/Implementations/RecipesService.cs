@@ -37,6 +37,11 @@ namespace RecipesFinalProjectServices.Implementations
             return _recipeRepo.RetrieveAll();
         }
 
+        public List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime)
+        {
+            return _recipeRepo.Search(title, categoryId, difficultyId, maxTime);
+        }
+
         public Recipes Update(Recipes recipes)
         {
             return _recipeRepo.Update(recipes);

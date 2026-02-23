@@ -18,6 +18,8 @@ namespace RecipesFinalProjectController
 
             builder.Services.AddScoped<IUsersRepo, UsersRepo>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<IFavoritesRepo, FavoritesRepo>();
+            builder.Services.AddScoped<IFavoritesService, FavoritesService>();
 
             var app = builder.Build();
 
