@@ -6,48 +6,82 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<form method="get" class="mb-4">
+<form method="get" class="row mb-4">
 
-    <input asp-for="Title" placeholder="Search title..." />
+    <div class="col-md-3">
+        <input type="text"
+               name="title"
+               value="@Model.Title"
+               class="form-control"
+               placeholder="Title" />
+    </div>
 
-    <select asp-for="CategoryId">
-        <option value="">All Categories</option>
-        @foreach (var cat in Model.Categories)
-        {
-            <option value="@cat.Id">@cat.Name</option>
-        }
-    </select>
-
-    <select asp-for="DifficultyId">
-        <option value="">All Difficulties</option>
-        @foreach (var diff in Model.Difficulties)
-        {
-            <option value="@diff.Id">@diff.Name</option>
-        }
-    </select>
-
-    <input asp-for="MaxTime" placeholder="Max Time (minutes)" />
-
-    <button type="submit">Search</button>
-
+    <div class="col-md-3">
+        <select name="categoryId" class="form-control">
+            <option value="">All Categories</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id" 
+                        selected="@(Model.CategoryId == category.Id)">
+                     @category.Name
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="number"
+               name="maxTime"
+               value="@Model.MaxTime"
+               class="form-control"
+               placeholder="Max Time" />
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary w-100">Filter</button>
+    </div>
 </form>
 
 <hr />
 
-@foreach (var recipe in Model.Recipes)
+@if (Model.Recipes.Any())
 {
-    <div class="card mb-3 p-3">
-        <h4>@recipe.Title</h4>
-        <p><strong>Category:</strong> @recipe.Category.Name</p>
-        <p><strong>Difficulty:</strong> @recipe.Difficulty.Name</p>
-        <p><strong>Time:</strong> @recipe.PreparationTime minutes</p>
-
-        @if (Model.IsLoggedIn)
+    <div class="row">
+        @foreach (var recipe in Model.Recipes)
         {
-            <form method="post">
-                <input type="hidden" name="RecipeId" value="@recipe.Id" />
-                <button type="submit">Add to Favorites</button>
-            </form>
+            <div class="col-md-4 mb-3">
+                <div class="card p-3">
+
+                    <h5>@recipe.Title</h5>
+                    <p>Category: @recipe.Category.Name</p>
+                    <p>Difficulty: @recipe.Difficulty.Name</p>
+                    <p>Time: @recipe.PreparationTime min</p>
+
+                    @if (Model.IsLoggedIn)
+                    {
+                        <form method="post">
+                            <input type="hidden" name="recipeId" value="@recipe.Id" />
+
+                            <button type="submit"
+                                    asp-page-handler="ToggleFavorite"
+                                    class="btn btn-link p-0">
+
+                                @if (Model.FavoriteRecipeIds.Contains(recipe.Id))
+                                {
+                                    <span style="color:red;font-size:22px;">❤️</span>
+                                }
+                                else
+                                {
+                                    <span style="font-size:22px;">🤍</span>
+                                }
+                            </button>
+                        </form>
+                    }
+
+                </div>
+            </div>
         }
     </div>
+}
+else
+{
+    <p>No recipes found</p>
 }

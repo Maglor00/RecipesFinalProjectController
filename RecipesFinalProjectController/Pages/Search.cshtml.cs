@@ -10,13 +10,25 @@ namespace RecipesFinalProjectController.Pages
     {
         private readonly IRecipesService _recipesService;
         private readonly IFavoritesService _favoritesService;
+        private readonly ICategoryService _categoryService;
+        private readonly IDifficultyService _difficultyService;
 
-        public SearchModel(IRecipesService recipesService, 
-                           IFavoritesService favoritesService)
+        public SearchModel(
+            IRecipesService recipesService,
+            IFavoritesService favoritesService,
+            ICategoryService categoryService,
+            IDifficultyService difficultyService)
         {
             _recipesService = recipesService;
             _favoritesService = favoritesService;
+            _categoryService = categoryService;
+            _difficultyService = difficultyService;
         }
+
+        public List<Recipes> Recipes { get; set; } = new();
+        public List<Category> Categories { get; set; } = new();
+        public List<Difficulty> Difficulties { get; set; } = new();
+        public List<int> FavoriteRecipeIds { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
         public string Title { get; set; }
@@ -30,31 +42,45 @@ namespace RecipesFinalProjectController.Pages
         [BindProperty(SupportsGet = true)]
         public double? MaxTime { get; set; }
 
-        public List<Recipes> Recipes { get; set; }
-        public List<Category> Categories { get; set; }
-        public List<Difficulty> Difficulties { get; set; }
-        public bool IsLoggedIn { get; set; }
-        
+        public bool IsLoggedIn =>
+            HttpContext.Session.GetInt32("LoggedInUserId") != null;
+
         public void OnGet()
         {
-            Recipes = _recipesService.Search(Title, CategoryId, DifficultyId, MaxTime);
+            Categories = _categoryService.RetrieveAll();
+            Difficulties = _difficultyService.RetrieveAll();
 
-            IsLoggedIn = HttpContext.Session.GetString("LoggedInUser") != null;
+            Recipes = _recipesService.Search(
+                Title,
+                CategoryId,
+                DifficultyId,
+                MaxTime);
 
-            Categories = new List<Category>();
-            Difficulties = new List<Difficulty>();
+            if (IsLoggedIn)
+            {
+                int userId =
+                    HttpContext.Session.GetInt32("LoggedInUserId").Value;
+
+                var favorites =
+                    _favoritesService.GetUserFavorites(userId);
+
+                FavoriteRecipeIds =
+                    favorites.Select(r => r.Id).ToList();
+            }
         }
 
-        public IActionResult OnPost(int recipeId)
+        public IActionResult OnPostToggleFavorite(int recipeId)
         {
-            var userJson = HttpContext.Session.GetString("LoggedInUser");
+            int? userId =
+                HttpContext.Session.GetInt32("LoggedInUserId");
 
-            if (userJson == null)
+            if (userId == null)
                 return RedirectToPage("/Login");
 
-            var user = JsonSerializer.Deserialize<Users>(userJson);
-
-            _favoritesService.AddFavorites(user.Id, recipeId);
+            if (_favoritesService.IsFavorite(userId.Value, recipeId))
+                _favoritesService.RemoveFavorite(userId.Value, recipeId);
+            else
+                _favoritesService.AddFavorites(userId.Value, recipeId);
 
             return RedirectToPage();
         }

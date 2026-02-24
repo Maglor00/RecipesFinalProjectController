@@ -2,30 +2,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
 using RecipesFinalProjectServices.Interface;
-using System.Text.Json;
 
 namespace RecipesFinalProjectController.Pages
 {
-    public class FavoritesModel : PageModel
+    public class MyFavoritesModel : PageModel
     {
         private readonly IFavoritesService _favoritesService;
 
-        public FavoritesModel(IFavoritesService favoritesService)
+        public MyFavoritesModel(IFavoritesService favoritesService)
         {
             _favoritesService = favoritesService;
         }
+        public List<Recipes> Favorites { get; set; } = new();
 
-        public List<Recipes> Favorites { get; set; }
         public IActionResult OnGet()
         {
-            var userJson = HttpContext.Session.GetString("LoggedInUser");
+            int? userId =
+                HttpContext.Session.GetInt32("LoggedInUserId");
 
-            if (userJson == null)
+            if (userId == null)
                 return RedirectToPage("/Login");
 
-            var user = JsonSerializer.Deserialize<Users>(userJson);
-
-            Favorites = _favoritesService.GetUserFavorites(user.Id);
+            Favorites =
+                _favoritesService.GetUserFavorites(userId.Value);
 
             return Page();
         }

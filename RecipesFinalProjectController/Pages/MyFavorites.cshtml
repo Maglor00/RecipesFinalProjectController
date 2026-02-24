@@ -1,0 +1,23 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.MyFavoritesModel
+@{
+    ViewData["Title"] = "My Favorites";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Favorites.Any())
+{
+    @foreach (var recipe in Model.Favorites)
+    {
+        <div class="card p-3 mb-2">
+            <h5>@recipe.Title</h5>
+            <p>Category: @recipe.Category.Name</p>
+            <p>Difficulty: @recipe.Difficulty.Name</p>
+        </div>
+    }
+}
+else
+{
+    <p>You have no favorite recipes.</p>
+}
