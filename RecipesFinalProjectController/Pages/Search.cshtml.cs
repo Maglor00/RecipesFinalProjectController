@@ -1,29 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectServices.Interface;
+using RecipesFinalProjectRepo;
+using RecipesFinalProjectServices;
 using System.Text.Json;
 
 namespace RecipesFinalProjectController.Pages
 {
     public class SearchModel : PageModel
     {
-        private readonly IRecipesService _recipesService;
-        private readonly IFavoritesService _favoritesService;
-        private readonly ICategoryService _categoryService;
-        private readonly IDifficultyService _difficultyService;
-
-        public SearchModel(
-            IRecipesService recipesService,
-            IFavoritesService favoritesService,
-            ICategoryService categoryService,
-            IDifficultyService difficultyService)
-        {
-            _recipesService = recipesService;
-            _favoritesService = favoritesService;
-            _categoryService = categoryService;
-            _difficultyService = difficultyService;
-        }
+        
 
         public List<Recipes> Recipes { get; set; } = new();
         public List<Category> Categories { get; set; } = new();
@@ -47,10 +33,10 @@ namespace RecipesFinalProjectController.Pages
 
         public void OnGet()
         {
-            Categories = _categoryService.RetrieveAll();
-            Difficulties = _difficultyService.RetrieveAll();
+            Categories = CategoryService.RetrieveAll();
+            Difficulties = DifficultyService.RetrieveAll();
 
-            Recipes = _recipesService.Search(
+            Recipes = RecipesService.Search(
                 Title,
                 CategoryId,
                 DifficultyId,
@@ -62,7 +48,7 @@ namespace RecipesFinalProjectController.Pages
                     HttpContext.Session.GetInt32("LoggedInUserId").Value;
 
                 var favorites =
-                    _favoritesService.GetUserFavorites(userId);
+                    FavoritesService.GetUserFavorites(userId);
 
                 FavoriteRecipeIds =
                     favorites.Select(r => r.Id).ToList();
@@ -77,10 +63,10 @@ namespace RecipesFinalProjectController.Pages
             if (userId == null)
                 return RedirectToPage("/Login");
 
-            if (_favoritesService.IsFavorite(userId.Value, recipeId))
-                _favoritesService.RemoveFavorite(userId.Value, recipeId);
+            if (FavoritesService.IsFavorite(userId.Value, recipeId))
+                FavoritesService.RemoveFavorite(userId.Value, recipeId);
             else
-                _favoritesService.AddFavorites(userId.Value, recipeId);
+                FavoritesService.AddFavorites(userId.Value, recipeId);
 
             return RedirectToPage();
         }

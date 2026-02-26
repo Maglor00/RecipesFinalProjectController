@@ -1,7 +1,4 @@
-using RecipesFinalProjectRepo.Implementations;
-using RecipesFinalProjectRepo.Interface;
-using RecipesFinalProjectServices.Implementations;
-using RecipesFinalProjectServices.Interface;
+
 
 namespace RecipesFinalProjectController
 {
@@ -16,10 +13,6 @@ namespace RecipesFinalProjectController
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<IUsersRepo, UsersRepo>();
-            builder.Services.AddScoped<IUsersService, UsersService>();
-            builder.Services.AddScoped<IFavoritesRepo, FavoritesRepo>();
-            builder.Services.AddScoped<IFavoritesService, FavoritesService>();
 
             var app = builder.Build();
 

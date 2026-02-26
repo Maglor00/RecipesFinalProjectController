@@ -1,18 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectServices.Interface;
+using RecipesFinalProjectServices;
 
 namespace RecipesFinalProjectController.Pages
 {
     public class MyFavoritesModel : PageModel
     {
-        private readonly IFavoritesService _favoritesService;
-
-        public MyFavoritesModel(IFavoritesService favoritesService)
-        {
-            _favoritesService = favoritesService;
-        }
         public List<Recipes> Favorites { get; set; } = new();
 
         public IActionResult OnGet()
@@ -24,7 +18,7 @@ namespace RecipesFinalProjectController.Pages
                 return RedirectToPage("/Login");
 
             Favorites =
-                _favoritesService.GetUserFavorites(userId.Value);
+                FavoritesService.GetUserFavorites(userId.Value);
 
             return Page();
         }

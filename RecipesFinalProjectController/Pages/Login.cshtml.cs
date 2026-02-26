@@ -1,19 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectServices.Interface;
+using RecipesFinalProjectServices;
 using System.Text.Json;
 
 namespace RecipesFinalProjectController.Pages
 {
     public class LoginModel : PageModel
     {
-        private readonly IUsersService _usersService;
-
-        public LoginModel(IUsersService usersService)
-        {
-            _usersService = usersService;
-        }
 
         [BindProperty]
         public string UserName { get; set; }
@@ -28,11 +22,11 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnPost()
         {
-            Users user = _usersService.Login(UserName, Password);
+            Users user = UsersService.Login(UserName, Password);
 
             if (user == null)
             {
-                ErrorMessage = "Invalid username or password";
+                ErrorMessage = "Invalid login";
                 return Page();
             }
 

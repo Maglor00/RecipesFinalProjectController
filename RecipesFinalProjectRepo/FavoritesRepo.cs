@@ -1,34 +1,31 @@
 ﻿using Microsoft.Data.SqlClient;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectRepo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipesFinalProjectRepo.Implementations
+namespace RecipesFinalProjectRepo
 {
-    public class FavoritesRepo : IFavoritesRepo
+    public static class FavoritesRepo
     {
-        private readonly string _tableName = "Favorites";
-
-        public void AddFavorite(int userId, int recipeId)
+        public static void AddFavorite(int userId, int recipeId)
         {
-            string sql = $"INSERT INTO {_tableName} (user_id, recipe_id) " +
+            string sql = $"INSERT INTO Favorites (user_id, recipe_id) " +
                 $"VALUES ({userId}, {recipeId})";
 
             SQL.ExecuteNonQuery(sql);
         }
 
-        public void RemoveFavorite(int userId, int recipeId)
+        public static void RemoveFavorite(int userId, int recipeId)
         {
-            string sql = $"DELETE FROM {_tableName} WHERE user_id = {userId} AND recipe_id = {recipeId}";
-            
+            string sql = $"DELETE FROM Favorites WHERE user_id = {userId} AND recipe_id = {recipeId}";
+
             SQL.ExecuteNonQuery(sql);
         }
 
-        public List<Recipes> GetUserFavorites(int userId)
+        public static List<Recipes> GetUserFavorites(int userId)
         {
             string sql = $"SELECT Recipes.*, " +
                 $"Categories.Name AS category_name, " +
@@ -51,16 +48,16 @@ namespace RecipesFinalProjectRepo.Implementations
             return recipes;
         }
 
-        public bool IsFavorite(int userId, int recipeId)
+        public static bool IsFavorite(int userId, int recipeId)
         {
-            string sql = $"SELECT COUNT(*) FROM {_tableName} WHERE user_id = {userId} AND recipe_id = {recipeId}";
+            string sql = $"SELECT COUNT(*) FROM Favorites WHERE user_id = {userId} AND recipe_id = {recipeId}";
 
             int count = SQL.ExecuteNonQuery(sql);
 
             return count > 0;
         }
 
-        private Recipes Parse(SqlDataReader dataReader)
+        private static Recipes Parse(SqlDataReader dataReader)
         {
             return new Recipes
             {

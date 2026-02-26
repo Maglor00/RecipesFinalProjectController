@@ -1,29 +1,27 @@
 ﻿using Microsoft.Data.SqlClient;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectRepo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipesFinalProjectRepo.Implementations
+namespace RecipesFinalProjectRepo
 {
-    public class UsersRepo : IUsersRepo
+    public static class UsersRepo 
     {
-        private readonly string _tableName = "Users";
-        public Users Create(Users user)
+        public static Users Create(Users user)
         {
-            string sql = $"INSERT INTO {_tableName} (first_name, last_name, username, password, is_admin) " +
+            string sql = $"INSERT INTO Users (first_name, last_name, username, password, is_admin) " +
                 $"VALUES ('{user.FirstName}', '{user.LastName}', '{user.Username}', " +
                 $"'{user.Password}', '{user.IsAdmin}');";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
 
-        public Users Login(string username, string password)
+        public static Users Login(string username, string password)
         {
-            string sql = $"SELECT * FROM {_tableName} WHERE username = '{username}' AND password = '{password}'";
+            string sql = $"SELECT * FROM Users WHERE username = '{username}' AND password = '{password}'";
             SqlDataReader datareader = SQL.ExecuteQuery(sql);
             if (datareader.Read())
             {
@@ -32,9 +30,9 @@ namespace RecipesFinalProjectRepo.Implementations
             return null;
         }
 
-        public Users Retrieve(int id)
+        public static Users Retrieve(int id)
         {
-            string sql = $"SELECT * FROM {_tableName} WHERE id = {id}";
+            string sql = $"SELECT * FROM Users WHERE id = {id}";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             if (dataReader.Read())
             {
@@ -43,9 +41,9 @@ namespace RecipesFinalProjectRepo.Implementations
             throw new Exception($"User with ID: {id} not found");
         }
 
-        public List<Users> RetrieveAll()
+        public static List<Users> RetrieveAll()
         {
-            string sql = $"SELECT * FROM {_tableName}";
+            string sql = $"SELECT * FROM Users";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             List<Users> users = new List<Users>();
             while (dataReader.Read())
@@ -55,10 +53,10 @@ namespace RecipesFinalProjectRepo.Implementations
             return users;
         }
 
-        public Users Update(Users userToUpdate)
+        public static Users Update(Users userToUpdate)
         {
             if (userToUpdate.Id <= 0) throw new Exception($"User id {userToUpdate.Id} invalid");
-            string sql = $"UPDATE {_tableName} SET " +
+            string sql = $"UPDATE Users SET " +
                 $"first_name = '{userToUpdate.FirstName}', last_name = '{userToUpdate.LastName}', " +
                 $"username = '{userToUpdate.Username}', password = '{userToUpdate.Password}', " +
                 $"is_admin = '{userToUpdate.IsAdmin}' WHERE id = {userToUpdate.Id}";
@@ -66,13 +64,13 @@ namespace RecipesFinalProjectRepo.Implementations
             return Retrieve(userToUpdate.Id);
         }
 
-        public void Delete(int id)
+        public static void Delete(int id)
         {
-            string sql = $"DELETE FROM {_tableName} WHERE id = {id}";
+            string sql = $"DELETE FROM Users WHERE id = {id}";
             SQL.ExecuteNonQuery(sql);
         }
 
-        public Users Parse(SqlDataReader dataReader)
+        public static Users Parse(SqlDataReader dataReader)
         {
             Users user = new Users();
             user.Id = Convert.ToInt32(dataReader["id"]);
