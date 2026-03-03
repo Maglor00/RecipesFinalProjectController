@@ -1,38 +1,36 @@
 ﻿using Microsoft.Data.SqlClient;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectRepo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipesFinalProjectRepo.Implementations
+namespace RecipesFinalProjectRepo
 {
-    internal class CategoryRepo : ICategoryRepo
+    public static class CategoryRepo
     {
-        private readonly string _tablename = "Category";
-        public Category Create(Category category)
+        public static Category Create(Category category)
         {
-            string sql = $"INSERT INTO {_tablename} (name) VALUES ('{category.Name}');";
+            string sql = $"INSERT INTO Category (name) VALUES ('{category.Name}');";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
 
-        public Category Retrieve(int id)
+        public static Category Retrieve(int id)
         {
-            string sql = $"SELECT * FROM {_tablename} WHERE id = {id};";
+            string sql = $"SELECT * FROM Category WHERE id = {id};";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            if(dataReader.Read())
+            if (dataReader.Read())
             {
                 return Parse(dataReader);
             }
             throw new Exception($"Category with ID: {id} not found");
         }
 
-        public List<Category> RetrieveAll()
+        public static List<Category> RetrieveAll()
         {
-            string sql = $"SELECT * FROM {_tablename};";
+            string sql = $"SELECT * FROM Category;";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             List<Category> categories = new List<Category>();
             while (dataReader.Read())
@@ -42,21 +40,21 @@ namespace RecipesFinalProjectRepo.Implementations
             return categories;
         }
 
-        public Category Update(Category categoryToUpdate)
+        public static Category Update(Category categoryToUpdate)
         {
-            if(categoryToUpdate.Id<=0) throw new Exception($"Category id {categoryToUpdate.Id} invalid");
-            string sql = $"UPDATE {_tablename} SET Name = '{categoryToUpdate.Name}' WHERE ID = {categoryToUpdate.Id}";
+            if (categoryToUpdate.Id <= 0) throw new Exception($"Category id {categoryToUpdate.Id} invalid");
+            string sql = $"UPDATE Category SET Name = '{categoryToUpdate.Name}' WHERE ID = {categoryToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(categoryToUpdate.Id);
         }
 
-        public void Delete(int id)
+        public static void Delete(int id)
         {
-            string sql = $"DELETE FROM {_tablename} WHERE id = {id}";
+            string sql = $"DELETE FROM Category WHERE id = {id}";
             SQL.ExecuteNonQuery(sql);
         }
 
-        private Category Parse(SqlDataReader dataReader)
+        private static Category Parse(SqlDataReader dataReader)
         {
             Category category = new Category();
             category.Id = Convert.ToInt32(dataReader["id"]);

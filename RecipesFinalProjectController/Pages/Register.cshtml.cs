@@ -1,19 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectServices.Interface;
+using RecipesFinalProjectServices;
 using System.Diagnostics.Contracts;
 
 namespace RecipesFinalProjectController.Pages
 {
     public class RegisterModel : PageModel
     {
-        private readonly IUsersService _usersService;
-
-        public RegisterModel(IUsersService usersService)
-        {
-            _usersService = usersService;
-        }
 
         [BindProperty]
         public string FirstName { get; set; }
@@ -53,7 +47,7 @@ namespace RecipesFinalProjectController.Pages
 
                 };
 
-                _usersService.Create(user);
+                UsersService.Create(user);
 
                 return RedirectToPage("/Login");
             }

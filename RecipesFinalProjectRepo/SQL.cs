@@ -35,6 +35,8 @@ namespace RecipesFinalProjectRepo
         public static SqlDataReader ExecuteQuery(string sql)
         {
             PrepareConnection();
+
+            Console.WriteLine(sql);
             SqlCommand sqlCommand = new SqlCommand(sql, conn);
             return sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
         }

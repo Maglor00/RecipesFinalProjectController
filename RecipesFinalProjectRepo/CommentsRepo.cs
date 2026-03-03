@@ -1,29 +1,28 @@
 ﻿using Microsoft.Data.SqlClient;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectRepo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipesFinalProjectRepo.Implementations
+namespace RecipesFinalProjectRepo
 {
-    internal class CommentsRepo : ICommentsRepo
+    public static class CommentsRepo
     {
-        private readonly string _tableName = "Comments";
-        public Comments Create(Comments comments)
+        
+        public static Comments Create(Comments comments)
         {
-            string sql = $"INSERT INTO {_tableName} (comment_text, user_id, recipe_id, reply_id) " +
+            string sql = $"INSERT INTO Comments (comment_text, user_id, recipe_id, reply_id) " +
                 $"VALUES ('{comments.CommentText}', '{comments.User.Id}', '{comments.Recipe.Id}', " +
                 $"'{comments.Reply.Id}');";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
 
-        public Comments Retrieve(int id)
+        public static Comments Retrieve(int id)
         {
-            string sql = $"SELECT * FROM {_tableName} WHERE id = {id}";
+            string sql = $"SELECT * FROM Comments WHERE id = {id}";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             if (dataReader.Read())
             {
@@ -32,9 +31,9 @@ namespace RecipesFinalProjectRepo.Implementations
             throw new Exception($"Comment with ID: {id} not found");
         }
 
-        public List<Comments> RetrieveAll()
+        public static List<Comments> RetrieveAll()
         {
-            string sql = $"SELECT * FROM {_tableName}";
+            string sql = $"SELECT * FROM Comments";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             List<Comments> comments = new List<Comments>();
             while (dataReader.Read())
@@ -44,30 +43,30 @@ namespace RecipesFinalProjectRepo.Implementations
             return comments;
         }
 
-        public Comments Update(Comments commentsToUpdate)
+        public static Comments Update(Comments commentsToUpdate)
         {
             if (commentsToUpdate.Id <= 0) throw new Exception($"User id {commentsToUpdate.Id} invalid");
-            string sql = $"UPDATE {_tableName} SET comment_text = '{commentsToUpdate.CommentText}', " +
+            string sql = $"UPDATE Comments SET comment_text = '{commentsToUpdate.CommentText}', " +
                 $"user_id = '{commentsToUpdate.User.Id}', recipe_id = '{commentsToUpdate.Recipe.Id}'" +
                 $"reply_id = '{commentsToUpdate.Reply.Id}' WHERE id = {commentsToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(commentsToUpdate.Id);
         }
 
-        public void Delete(int id)
+        public static void Delete(int id)
         {
-            string sql = $"DELETE FROM {_tableName} WHERE id = {id}";
+            string sql = $"DELETE FROM Comments WHERE id = {id}";
             SQL.ExecuteNonQuery(sql);
         }
 
-        private Comments Parse(SqlDataReader datareader)
+        private static Comments Parse(SqlDataReader datareader)
         {
             Comments comments = new Comments();
             comments.Id = Convert.ToInt32(datareader["id"]);
             comments.CommentText = Convert.ToString(datareader["comment_text"]);
             comments.User.Id = Convert.ToInt32(datareader["user_id"]);
             comments.Recipe.Id = Convert.ToInt32(datareader["recipe_id"]);
-            comments.Reply.Id = Convert.ToInt32(datareader["reply_id"]); 
+            comments.Reply.Id = Convert.ToInt32(datareader["reply_id"]);
 
             return comments;
         }

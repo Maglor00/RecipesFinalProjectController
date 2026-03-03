@@ -1,27 +1,25 @@
 ﻿using Microsoft.Data.SqlClient;
 using RecipesFinalProjectModels;
-using RecipesFinalProjectRepo.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipesFinalProjectRepo.Implementations
+namespace RecipesFinalProjectRepo
 {
-    internal class IngredientsRepo : IIngredientsRepo
+    public static class IngredientsRepo
     {
-        private readonly string _tableName = "Ingredients";
-        public Ingredients Create(Ingredients ingredients)
+        public static Ingredients Create(Ingredients ingredients)
         {
-            string sql = $"INSERT INTO {_tableName} (name) VALUES ('{ingredients.Name}');";
+            string sql = $"INSERT INTO Ingredients (name) VALUES ('{ingredients.Name}');";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
 
-        public Ingredients Retrieve(int id)
+        public static Ingredients Retrieve(int id)
         {
-            string sql = $"SELECT * FROM {_tableName} WHERE id = {id}";
+            string sql = $"SELECT * FROM Ingredients WHERE id = {id}";
             SqlDataReader datareader = SQL.ExecuteQuery(sql);
             if (datareader.Read())
             {
@@ -30,9 +28,9 @@ namespace RecipesFinalProjectRepo.Implementations
             throw new Exception($"Ingredient with ID: {id} not found");
         }
 
-        public List<Ingredients> RetrieveAll()
+        public static List<Ingredients> RetrieveAll()
         {
-            string sql = $"SELECT * FROM {_tableName}";
+            string sql = $"SELECT * FROM Ingredients";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             List<Ingredients> ingredients = new List<Ingredients>();
             while (dataReader.Read())
@@ -42,22 +40,22 @@ namespace RecipesFinalProjectRepo.Implementations
             return ingredients;
         }
 
-        public Ingredients Update(Ingredients ingredientsToUpdate)
+        public static Ingredients Update(Ingredients ingredientsToUpdate)
         {
             if (ingredientsToUpdate.Id <= 0) throw new Exception($"Ingredient id {ingredientsToUpdate.Id} invalid");
-            string sql = $"UPDATE {_tableName} SET name = '{ingredientsToUpdate.Name}' " +
+            string sql = $"UPDATE Ingredients SET name = '{ingredientsToUpdate.Name}' " +
                 $"WHERE id = {ingredientsToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(ingredientsToUpdate.Id);
         }
 
-        public void Delete(int id)
+        public static void Delete(int id)
         {
-            string sql = $"DELETE FROM {_tableName} WHERE id = {id}";
+            string sql = $"DELETE FROM Ingredients WHERE id = {id}";
             SQL.ExecuteNonQuery(sql);
         }
 
-        private Ingredients Parse(SqlDataReader dataReader)
+        private static Ingredients Parse(SqlDataReader dataReader)
         {
             Ingredients ingredients = new Ingredients();
             ingredients.Id = Convert.ToInt32(dataReader["id"]);
