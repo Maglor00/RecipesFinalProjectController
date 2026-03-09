@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
 using RecipesFinalProjectServices;
+using System.Security.Claims;
 
 namespace RecipesFinalProjectController.Pages
 {
@@ -11,14 +12,14 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnGet()
         {
-            int? userId =
-                HttpContext.Session.GetInt32("LoggedInUserId");
-
-            if (userId == null)
+            if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
+            int userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
             Favorites =
-                FavoritesService.GetUserFavorites(userId.Value);
+                FavoritesService.GetUserFavorites(userId);
 
             return Page();
         }

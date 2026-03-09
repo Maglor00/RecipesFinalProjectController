@@ -28,12 +28,12 @@ namespace RecipesFinalProjectRepo
         public static List<Recipes> GetUserFavorites(int userId)
         {
             string sql = $"SELECT Recipes.*, " +
-                $"Categories.Name AS category_name, " +
-                $"Difficulties.name AS difficulty_name " +
+                $"Category.Name AS category_name, " +
+                $"Difficulty.name AS difficulty_name " +
                 $"FROM Recipes " +
                 $"JOIN Favorites ON Recipes.id = Favorites.recipe_id " +
-                $"JOIN Categories ON Recipes.category_id = Categories.id " +
-                $"JOIN Difficulties ON Recipes.difficulty_id = Difficulties.id " +
+                $"JOIN Category ON Recipes.category_id = Category.id " +
+                $"JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
                 $"WHERE Favorites.user_id = {userId}";
 
             SqlDataReader datareader = SQL.ExecuteQuery(sql);
@@ -52,9 +52,15 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT COUNT(*) FROM Favorites WHERE user_id = {userId} AND recipe_id = {recipeId}";
 
-            int count = SQL.ExecuteNonQuery(sql);
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
 
-            return count > 0;
+            if (dataReader.Read())
+            {
+                int count = Convert.ToInt32(dataReader[0]);
+                return count > 0;
+            }
+
+            return false;
         }
 
         private static Recipes Parse(SqlDataReader dataReader)

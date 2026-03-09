@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
 using RecipesFinalProjectRepo;
+using RecipesFinalProjectServices;
+using System.Security.Claims;
 
 namespace RecipesFinalProjectController.Pages
 {
@@ -17,7 +19,7 @@ namespace RecipesFinalProjectController.Pages
         public IActionResult OnGet()
         {
             // Only logged in users
-            if (HttpContext.Session.GetString("LoggedInUserId") == null)
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToPage("/Login");
             }
@@ -35,19 +37,24 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnPost()
         {
-            if (HttpContext.Session.GetString("LoggedInUserId") == null)
+            if (!ModelState.IsValid)
             {
-                return RedirectToPage("/Login");
+                LoadDropdowns();
+                return Page();
             }
 
-            int userId = int.Parse(HttpContext.Session.GetString("LoggedInUserId"));
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToPage("/Login");
+
+            int userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             Recipe.User = new Users
             {
                 Id = userId
             };
 
-            RecipesRepo.Create(Recipe);
+            RecipesService.Create(Recipe);
 
             return RedirectToPage("/Index");
         }
