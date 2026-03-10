@@ -1,0 +1,60 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.Admin.RecipeApprovalModel
+@{
+    ViewData["Title"] = "Pending Recipe";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if(Model.PendingRecipes.Count == 0)
+{
+    <p>No pending recipes.</p>
+}
+
+<div class="row">
+
+    @foreach (var r in Model.PendingRecipes)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                @if (!string.IsNullOrEmpty(r.ImageUrl))
+                {
+                    <img src="@r.ImageUrl"
+                         class="card-img-top"
+                         style="height:200px;object-fit:cover;" />
+                }
+                <div class="card-body">
+
+                    <h5>@r.Title</h5>
+
+                    <p>
+                        Category: @r.Category.Name
+                        <br />
+
+                        Difficulty: @r.Difficulty.Name
+                        <br />
+
+
+                        Time: @r.PreparationTime min
+
+                    </p>
+
+                    <form method="post" asp-asp-page-handler="Approve">
+
+                        <input type="hidden"
+                               name="recipeId"
+                               value="@r.Id" />
+
+                        <button class="btn btn-success">
+
+                            Approve Recipe
+
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>     
+    }
+</div>
+

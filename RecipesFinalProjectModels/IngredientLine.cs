@@ -10,8 +10,8 @@ namespace RecipesFinalProjectModels
     {
         public int Id { get; set; }
         public Ingredients Ingredient { get; set; }
-        public int Quantity { get; set; }
-        public decimal Measure { get; set; }
+        public double Quantity { get; set; }
+        public string Measure { get; set; } = string.Empty;
         public Recipes Recipe { get; set; }
 
         public string ToString()

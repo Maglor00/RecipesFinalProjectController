@@ -66,8 +66,8 @@ namespace RecipesFinalProjectRepo
             IngredientLine ingredientLine = new IngredientLine();
             ingredientLine.Id = Convert.ToInt32(dataReader["id"]);
             ingredientLine.Ingredient.Id = Convert.ToInt32(dataReader["ingredient_id"]);
-            ingredientLine.Quantity = Convert.ToInt32(dataReader["quantity"]);
-            ingredientLine.Measure = Convert.ToDecimal(dataReader["measure"]);
+            ingredientLine.Quantity = Convert.ToDouble(dataReader["quantity"]);
+            ingredientLine.Measure = Convert.ToString(dataReader["measure"]);
             ingredientLine.Recipe.Id = Convert.ToInt32(dataReader["recipe_id"]);
 
             return ingredientLine;

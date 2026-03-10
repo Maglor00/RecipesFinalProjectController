@@ -70,7 +70,7 @@ namespace RecipesFinalProjectRepo
                 Id = Convert.ToInt32(dataReader["id"]),
                 Title = Convert.ToString(dataReader["title"]),
                 PreparationMethod = Convert.ToString(dataReader["preparation_method"]),
-                PreparationTime = Convert.ToDouble(dataReader["preparation_time"]),
+                PreparationTime = Convert.ToInt32(dataReader["preparation_time"]),
                 IsApproved = Convert.ToBoolean(dataReader["is_approved"]),
                 Category = new Category
                 {

@@ -58,7 +58,7 @@ namespace RecipesFinalProjectController.Pages
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
 
-            return RedirectToPage("/Profile");
+            return RedirectToPage("/Index");
         }
     }
 }

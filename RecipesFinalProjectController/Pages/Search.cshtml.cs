@@ -69,7 +69,13 @@ namespace RecipesFinalProjectController.Pages
             else
                 FavoritesService.AddFavorites(userId, recipeId);
 
-            return RedirectToPage();
+            return RedirectToPage(new
+            {
+                Title,
+                CategoryId,
+                DifficultyId,
+                MaxTime
+            });
         }
     }
 }

@@ -24,6 +24,33 @@ namespace RecipesFinalProjectRepo
             return Retrieve(id);
         }
 
+        public static List<Recipes> RetrievePendingRecipes()
+        {
+            string sql = "SELECT Recipes.*, Category.name AS category_name, Difficulty.name AS difficulty_name, Users.username " +
+                "FROM Recipes " +
+                "JOIN Category ON Recipes.category_id = Category.id " +
+                "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
+                "JOIN Users ON Recipes.user_id = Users.id " +
+                "WHERE Recipes.is_approved = 0";
+
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
+            List<Recipes> list = new();
+
+            while (dataReader.Read())
+            {
+                list.Add(Parse(dataReader));
+            }
+
+            return list;
+        }
+
+        public static void ApproveRecipe (int id)
+        {
+            string sql = $"UPDATE Recipes SET is_approved = 1 WHERE id = {id}";
+
+            SQL.ExecuteNonQuery(sql);
+        }
         public static Recipes Retrieve(int id)
         {
             string sql = $"SELECT * FROM Recipes WHERE id = {id}";
@@ -60,7 +87,7 @@ namespace RecipesFinalProjectRepo
              "WHERE Recipes.is_approved = 1 ";
 
             if (!string.IsNullOrEmpty(title))
-                sql += $"AND Recipes.title LIKE '%{title}%' ";
+                sql += $"AND LOWER(Recipes.title) LIKE LOWER('%{title}%') ";
 
             if (categoryId.HasValue)
                 sql += $"AND Recipes.category_id = {categoryId.Value} ";
@@ -107,7 +134,7 @@ namespace RecipesFinalProjectRepo
             recipes.Id = Convert.ToInt32(dataReader["id"]);
             recipes.Title = Convert.ToString(dataReader["title"]);
             recipes.PreparationMethod = Convert.ToString(dataReader["preparation_method"]);
-            recipes.PreparationTime = Convert.ToDouble(dataReader["preparation_time"]);
+            recipes.PreparationTime = Convert.ToInt32(dataReader["preparation_time"]);
 
             recipes.Category = new Category
             {
@@ -132,6 +159,10 @@ namespace RecipesFinalProjectRepo
                     ? Convert.ToString(dataReader["username"])
                     : ""
             };
+
+            recipes.ImageUrl = HasColumn(dataReader, "image_url")
+                    ? Convert.ToString(dataReader["image_url"])
+                    : "";
 
             recipes.IsApproved = Convert.ToBoolean(dataReader["is_approved"]);
 
