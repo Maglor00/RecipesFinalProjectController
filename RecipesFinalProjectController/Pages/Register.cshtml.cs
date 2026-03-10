@@ -24,12 +24,8 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnGet()
         {
-            var userJson = HttpContext?.Session?.GetString("LoggedInUser");
-
-            if (!string.IsNullOrEmpty(userJson))
-            {
+            if (User.Identity.IsAuthenticated)
                 return RedirectToPage("/Profile");
-            }
 
             return Page();
         }
