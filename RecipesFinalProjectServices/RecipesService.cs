@@ -10,7 +10,11 @@ namespace RecipesFinalProjectServices
 {
     public static class RecipesService
     {
-
+        
+        public static void ApproveRecipe(int id)
+        {
+            RecipesRepo.ApproveRecipe(id);
+        }
         public static Recipes Create(Recipes recipes)
         {
             if (recipes.Title.Equals(null)) 
@@ -28,6 +32,11 @@ namespace RecipesFinalProjectServices
         public static List<Recipes> RetrieveAll()
         {
             return RecipesRepo.RetrieveAll();
+        }
+
+        public static List<Recipes> RetrievePendingRecipes()
+        {
+            return RecipesRepo.RetrievePendingRecipes();
         }
 
         public static List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime)

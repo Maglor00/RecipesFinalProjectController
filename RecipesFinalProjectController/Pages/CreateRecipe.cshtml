@@ -1,0 +1,57 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.CreateRecipeModel
+@{
+    ViewData["Title"] = "Create Recipe";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success">
+        @Model.Message
+    </div>
+}
+<form method="post">
+
+    <div class="form-group">
+        <label>Title</label>
+        <input asp-for="Recipe.Title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Preparation Method</label>
+        <textarea asp-for="Recipe.PreparationMethod" class="form-control" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Preparation Time (minutes)</label>
+        <input asp-for="Recipe.PreparationTime" type="number" step="0.1" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select asp-for="Recipe.Category.Id" class="form-control">
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Difficulty</label>
+        <select asp-for="Recipe.Difficulty.Id" class="form-control">
+            @foreach (var difficulty in Model.Difficulties)
+            {
+                <option value="@difficulty.Id">@difficulty.Name</option>
+            }
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">
+        Create Recipe
+    </button>
+</form>

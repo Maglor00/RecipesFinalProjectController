@@ -1,5 +1,7 @@
 
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace RecipesFinalProjectController
 {
     public class Program
@@ -10,9 +12,15 @@ namespace RecipesFinalProjectController
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddSession();
-            builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login";
+                    options.LogoutPath = "/Logout";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(2);
+                });
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -29,8 +37,8 @@ namespace RecipesFinalProjectController
 
             app.UseRouting();
 
-            app.UseSession();
-
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();

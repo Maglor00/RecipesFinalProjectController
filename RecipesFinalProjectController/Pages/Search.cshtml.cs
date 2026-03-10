@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipesFinalProjectModels;
 using RecipesFinalProjectRepo;
 using RecipesFinalProjectServices;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace RecipesFinalProjectController.Pages
@@ -28,8 +29,8 @@ namespace RecipesFinalProjectController.Pages
         [BindProperty(SupportsGet = true)]
         public double? MaxTime { get; set; }
 
-        public bool IsLoggedIn =>
-            HttpContext.Session.GetInt32("LoggedInUserId") != null;
+        public bool IsLoggedIn => User.Identity.IsAuthenticated;
+            
 
         public void OnGet()
         {
@@ -42,10 +43,10 @@ namespace RecipesFinalProjectController.Pages
                 DifficultyId,
                 MaxTime);
 
-            if (IsLoggedIn)
+            if (User.Identity.IsAuthenticated)
             {
-                int userId =
-                    HttpContext.Session.GetInt32("LoggedInUserId").Value;
+                int userId = int.Parse(
+                    User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 var favorites =
                     FavoritesService.GetUserFavorites(userId);
@@ -57,18 +58,24 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnPostToggleFavorite(int recipeId)
         {
-            int? userId =
-                HttpContext.Session.GetInt32("LoggedInUserId");
-
-            if (userId == null)
+            if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            if (FavoritesService.IsFavorite(userId.Value, recipeId))
-                FavoritesService.RemoveFavorite(userId.Value, recipeId);
-            else
-                FavoritesService.AddFavorites(userId.Value, recipeId);
+            int userId = int.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            return RedirectToPage();
+            if (FavoritesService.IsFavorite(userId, recipeId))
+                FavoritesService.RemoveFavorite(userId, recipeId);
+            else
+                FavoritesService.AddFavorites(userId, recipeId);
+
+            return RedirectToPage(new
+            {
+                Title,
+                CategoryId,
+                DifficultyId,
+                MaxTime
+            });
         }
     }
 }

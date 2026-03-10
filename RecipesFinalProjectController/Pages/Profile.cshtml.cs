@@ -7,18 +7,17 @@ namespace RecipesFinalProjectController.Pages
 {
     public class ProfileModel : PageModel
     {
-        public Users User { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
 
         public IActionResult OnGet()
         {
-            string userJson = HttpContext.Session.GetString("LoggedInUser");
-
-            if (string.IsNullOrEmpty(userJson))
-            {
+            if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
-            }
 
-            User = JsonSerializer.Deserialize<Users>(userJson);
+            FirstName = User.FindFirst("FirstName")?.Value;
+            LastName = User.FindFirst("LastName")?.Value;
 
             return Page();
         }
