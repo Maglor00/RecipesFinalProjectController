@@ -4,20 +4,22 @@
     ViewData["Title"] = "My Favorites";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="page-title">My Favorite Recipes</h2>
 
 @if (Model.Favorites.Any())
 {
-    @foreach (var recipe in Model.Favorites)
-    {
-        <div class="card p-3 mb-2">
-            <h5>@recipe.Title</h5>
-            <p>Category: @recipe.Category.Name</p>
-            <p>Difficulty: @recipe.Difficulty.Name</p>
-        </div>
-    }
+    <div class="row">
+        @foreach (var recipe in Model.Favorites)
+        {
+            <div class="col-md-4 mb-4">
+                <partial name="_RecipeCard" model="recipe" />
+            </div>
+        }
+    </div>
 }
 else
 {
-    <p>You have no favorite recipes.</p>
+    <div class="empty-state">
+        You have no favorite recipes yet.
+    </div>
 }

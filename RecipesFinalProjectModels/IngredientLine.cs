@@ -10,7 +10,7 @@ namespace RecipesFinalProjectModels
     {
         public int Id { get; set; }
         public Ingredients Ingredient { get; set; }
-        public double Quantity { get; set; }
+        public  decimal Quantity { get; set; }
         public string Measure { get; set; } = string.Empty;
         public Recipes Recipe { get; set; }
 

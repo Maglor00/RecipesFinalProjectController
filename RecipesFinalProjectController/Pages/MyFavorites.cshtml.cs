@@ -15,11 +15,9 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            Favorites =
-                FavoritesService.GetUserFavorites(userId);
+            Favorites = FavoritesService.GetUserFavorites(userId);
 
             return Page();
         }

@@ -13,10 +13,11 @@ namespace RecipesFinalProjectServices
 
         public static Ingredients Create(Ingredients ingredients)
         {
-            if (ingredients.Name.Equals(null))
+            if (ingredients == null || string.IsNullOrWhiteSpace(ingredients.Name))
             {
-                throw new InvalidOperationException("Please enter a valid name");
+                throw new InvalidOperationException("Please enter a valid ingredient name");
             }
+
             return IngredientsRepo.Create(ingredients);
         }
 
@@ -28,6 +29,16 @@ namespace RecipesFinalProjectServices
         public static List<Ingredients> RetrieveAll()
         {
             return IngredientsRepo.RetrieveAll();
+        }
+
+        public static Ingredients RetrieveOrCreateByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new InvalidOperationException("Please enter a valid ingredient name");
+            }
+
+            return IngredientsRepo.RetrieveOrCreateByName(name.Trim());
         }
 
         public static Ingredients Update(Ingredients ingredients)

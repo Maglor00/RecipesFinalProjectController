@@ -12,7 +12,7 @@ namespace RecipesFinalProjectModels
         public string Title { get; set; }
         public IngredientLine IngredientLine { get; set; }
         public string PreparationMethod { get; set; }
-        public int PreparationTime { get; set; }
+        public double PreparationTime { get; set; }
         public Category Category { get; set; }
         public string ImageUrl { get; set; }
         public Difficulty Difficulty { get; set; }

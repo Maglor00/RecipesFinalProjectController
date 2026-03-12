@@ -40,6 +40,33 @@ namespace RecipesFinalProjectRepo
             return categories;
         }
 
+        public static Category? RetrieveByName(string name)
+        {
+            string sql = $"SELECT * FROM Category WHERE LOWER(name) = LOWER ('{name}');";
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
+            if (dataReader.Read())
+            {
+                return Parse(dataReader);
+            }
+
+            return null;
+        }
+
+        public static Category RetrieveOrCreateByName(string name)
+        {
+            var existing = RetrieveByName(name);
+            if (existing != null)
+            {
+                return existing;
+            }
+                
+            return Create(new Category
+            {
+                Name = name
+            }); 
+        }
+
         public static Category Update(Category categoryToUpdate)
         {
             if (categoryToUpdate.Id <= 0) throw new Exception($"Category id {categoryToUpdate.Id} invalid");

@@ -12,9 +12,15 @@ namespace RecipesFinalProjectServices
     {
         public static Users Create(Users user)
         {
-            if(user.FirstName.Equals(null) || user.LastName.Equals(null) || user.Username.Equals(null))
+            if (user == null)
+                throw new InvalidOperationException("User is required");
+
+            if (string.IsNullOrWhiteSpace(user.FirstName) ||
+                string.IsNullOrWhiteSpace(user.LastName) ||
+                string.IsNullOrWhiteSpace(user.Username) ||
+                string.IsNullOrWhiteSpace(user.Password))
             {
-                throw new InvalidOperationException("Please enter a valid name and/or username");
+                throw new InvalidOperationException("Please enter a valid name, username, and password");
             }
             return UsersRepo.Create(user);
         }

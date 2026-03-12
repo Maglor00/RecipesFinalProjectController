@@ -1,0 +1,29 @@
+﻿@model RecipesFinalProjectModels.Recipes
+
+<a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
+    <div class="card recipe-card h-100">
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" class="card-img-top" alt="@Model.Title" />
+        }
+        else
+        {
+            <div class="recipe-card-placeholder d-flex align-items-center justify-content-center">
+                <span class="text-muted">No image</span>
+            </div>
+        }
+
+        <div class="card-body">
+            <h5 class="card-title">@Model.Title</h5>
+
+            <div class="mb-2">
+                <span class="badge-soft">@Model.Category?.Name</span>
+                <span class="badge-soft">@Model.Difficulty?.Name</span>
+            </div>
+
+            <p class="recipe-meta mb-0">
+                Time: @Model.PreparationTime min
+            </p>
+        </div>
+    </div>
+</a>

@@ -13,11 +13,17 @@ namespace RecipesFinalProjectServices
 
         public static IngredientLine Create(IngredientLine ingredientLine)
         {
-            if(ingredientLine.Ingredient.Equals(null) || ingredientLine.Quantity.Equals(null)|| 
-                ingredientLine.Measure.Equals(null))
-            {
-                throw new InvalidOperationException("Please insert valid parameters");
-            }
+            if (ingredientLine == null)
+                throw new InvalidOperationException("Ingredient line is required");
+
+            if (ingredientLine.Ingredient == null || ingredientLine.Ingredient.Id <= 0)
+                throw new InvalidOperationException("Please select a valid ingredient");
+
+            if (ingredientLine.Recipe == null || ingredientLine.Recipe.Id <= 0)
+                throw new InvalidOperationException("Please select a valid recipe");
+
+            if (ingredientLine.Quantity <= 0)
+                throw new InvalidOperationException("Quantity must be greater than zero");
 
             return IngredientLineRepo.Create(ingredientLine);
         }
@@ -30,6 +36,11 @@ namespace RecipesFinalProjectServices
         public static List<IngredientLine> RetrieveAll()
         {
             return IngredientLineRepo.RetrieveAll();
+        }
+
+        public static List<IngredientLine> RetrieveByRecipeId(int recipeId)
+        {
+            return IngredientLineRepo.RetrieveByRecipeId(recipeId);
         }
 
         public static IngredientLine Update(IngredientLine ingredientLine)

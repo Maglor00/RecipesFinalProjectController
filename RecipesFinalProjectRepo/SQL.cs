@@ -19,9 +19,10 @@ namespace RecipesFinalProjectRepo
         public static int ExecuteNonQuery(string sql)
         {
             PrepareConnection();
-            if (sql.StartsWith("Insert"))
+            
+            if (sql.TrimStart().StartsWith("INSERT", StringComparison.OrdinalIgnoreCase))
             {
-                sql = sql + $"SELECT CAST(scope_identity() AS int);";
+                sql = sql + " SELECT CAST(scope_identity() AS int);";
                 SqlCommand sqlCommand = new SqlCommand(sql, conn);
                 return Convert.ToInt32(sqlCommand.ExecuteScalar());
             }

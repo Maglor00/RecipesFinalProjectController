@@ -27,14 +27,16 @@ namespace RecipesFinalProjectRepo
 
         public static List<Recipes> GetUserFavorites(int userId)
         {
-            string sql = $"SELECT Recipes.*, " +
-                $"Category.Name AS category_name, " +
-                $"Difficulty.name AS difficulty_name " +
-                $"FROM Recipes " +
-                $"JOIN Favorites ON Recipes.id = Favorites.recipe_id " +
-                $"JOIN Category ON Recipes.category_id = Category.id " +
-                $"JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
-                $"WHERE Favorites.user_id = {userId}";
+            string sql = "SELECT Recipes.*, " +
+                 "Category.name AS category_name, " +
+                 "Difficulty.name AS difficulty_name, " +
+                 "Users.username AS username " +
+                 "FROM Recipes " +
+                 "JOIN Favorites ON Recipes.id = Favorites.recipe_id " +
+                 "JOIN Category ON Recipes.category_id = Category.id " +
+                 "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
+                 "JOIN Users ON Recipes.user_id = Users.id " +
+                 $"WHERE Favorites.user_id = {userId}";
 
             SqlDataReader datareader = SQL.ExecuteQuery(sql);
 
@@ -71,6 +73,7 @@ namespace RecipesFinalProjectRepo
                 Title = Convert.ToString(dataReader["title"]),
                 PreparationMethod = Convert.ToString(dataReader["preparation_method"]),
                 PreparationTime = Convert.ToInt32(dataReader["preparation_time"]),
+                ImageUrl = dataReader["image_url"] == DBNull.Value ? "" : Convert.ToString(dataReader["image_url"]),
                 IsApproved = Convert.ToBoolean(dataReader["is_approved"]),
                 Category = new Category
                 {

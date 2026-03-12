@@ -1,10 +1,30 @@
 ﻿@page
-@model IndexModel
+@model RecipesFinalProjectController.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="top-hero mb-4">
+    <h1>Discover and share amazing recipes</h1>
+    <p>Browse top-rated dishes, save your favorites, and create your own recipes.</p>
 </div>
+
+<h2 class="page-title">🔥 Top Recipes</h2>
+
+@if (Model.TopRecipes != null && Model.TopRecipes.Any())
+{
+    <div class="row">
+        @foreach (var recipe in Model.TopRecipes)
+        {
+            <div class="col-md-4 mb-4">
+                <partial name="_RecipeCard" model="recipe" />
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        No top recipes available yet.
+    </div>
+}

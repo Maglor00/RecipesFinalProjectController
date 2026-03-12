@@ -31,6 +31,14 @@ namespace RecipesFinalProjectServices
             return DifficultyRepo.RetrieveAll();
         }
 
+        public static Difficulty RetrieveOrCreateByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new InvalidOperationException("The Difficulty name can't be null");
+
+            return DifficultyRepo.RetrieveOrCreateByName(name.Trim());
+        }
+
         public static Difficulty Update(Difficulty difficulty)
         {
             return DifficultyRepo.Update(difficulty);

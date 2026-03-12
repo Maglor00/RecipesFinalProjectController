@@ -1,0 +1,67 @@
+﻿@page "{id:int}"
+@model RecipesFinalProjectController.Pages.RecipeDetailsModel
+@{
+    ViewData["Title"] = "Recipe Details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/recipe-details.css" asp-append-version="true" />
+}
+
+<div class="recipe-details-page">
+    <h2 class="page-title">@Model.Recipe.Title</h2>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Recipe.ImageUrl))
+    {
+        <div class="recipe-hero mb-4">
+            <img src="@Model.Recipe.ImageUrl" alt="@Model.Recipe.Title" class="recipe-main-image" />
+        </div>
+    }
+
+    <div class="recipe-detail-box p-4 mb-3">
+        <p><strong>Category:</strong> @Model.Recipe.Category?.Name</p>
+        <p><strong>Difficulty:</strong> @Model.Recipe.Difficulty?.Name</p>
+        <p><strong>Time:</strong> @Model.Recipe.PreparationTime min</p>
+        <p><strong>Average Rating:</strong> @Model.AverageRating.ToString("0.0") ⭐</p>
+    </div>
+
+    <div class="recipe-detail-box p-4 mb-3">
+        <h4 class="section-title">Preparation</h4>
+        <p>@Model.Recipe.PreparationMethod</p>
+    </div>
+
+    <div class="recipe-detail-box p-4 mb-3">
+        <h4 class="section-title">Ingredients</h4>
+        @if (Model.Ingredients.Any())
+        {
+            <ul>
+                @foreach (var ingredient in Model.Ingredients)
+                {
+                    <li>@ingredient.Quantity @ingredient.Measure @ingredient.Ingredient?.Name</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No ingredients listed.</p>
+        }
+    </div>
+
+    <div class="recipe-detail-box p-4">
+        <h4 class="section-title">Comments</h4>
+        @if (Model.Comments.Any())
+        {
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment-card mb-2">
+                    <strong>@comment.User?.Username</strong>
+                    <p class="mb-0">@comment.CommentText</p>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No comments yet.</p>
+        }
+    </div>
+</div>

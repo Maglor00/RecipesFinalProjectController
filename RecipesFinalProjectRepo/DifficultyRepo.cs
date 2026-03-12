@@ -42,6 +42,33 @@ namespace RecipesFinalProjectRepo
             return difficulties;
         }
 
+        public static Difficulty? RetrieveByName(string name)
+        {
+            string sql = $"SELECT * FROM Difficulty WHERE LOWER (name) = LOWER('{name}');";
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
+            if(dataReader.Read())
+            {
+                return Parse(dataReader);
+            }
+
+            return null;
+        }
+
+        public static Difficulty RetrieveOrCreateByName(string name)
+        {
+            var existing = RetrieveByName(name);
+            if(existing != null)
+            {
+                return existing;
+            }
+
+            return Create(new Difficulty
+            {
+                Name = name
+            });
+        }
+
         public static Difficulty Update(Difficulty difficultyToUpdate)
         {
             if (difficultyToUpdate.Id <= 0) throw new Exception($"User id {difficultyToUpdate.Id} invalid");

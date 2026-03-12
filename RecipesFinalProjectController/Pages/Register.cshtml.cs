@@ -31,19 +31,31 @@ namespace RecipesFinalProjectController.Pages
         }
         public IActionResult OnPost()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToPage("/Profile");
             try
             {
+                if (string.IsNullOrWhiteSpace(FirstName) ||
+                    string.IsNullOrWhiteSpace(LastName) ||
+                    string.IsNullOrWhiteSpace(Username) ||
+                    string.IsNullOrWhiteSpace(Password))
+                {
+                    ErrorMessage = "Please fill in all fields.";
+                    return Page();
+                }
+
                 Users user = new Users
                 {
-                    FirstName = FirstName,
-                    LastName = LastName,
-                    Username = Username,
+                    FirstName = FirstName.Trim(),
+                    LastName = LastName.Trim(),
+                    Username = Username.Trim(),
                     Password = Password,
                     IsAdmin = false
-
                 };
 
                 UsersService.Create(user);
+
+                TempData["Message"] = "Account created successfully. You can now login.";
 
                 return RedirectToPage("/Login");
             }

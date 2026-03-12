@@ -1,60 +1,85 @@
 ﻿@page
 @model RecipesFinalProjectController.Pages.Admin.RecipeApprovalModel
 @{
-    ViewData["Title"] = "Pending Recipe";
+    ViewData["Title"] = "Recipe Approval";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="mb-4">@ViewData["Title"]</h2>
 
-@if(Model.PendingRecipes.Count == 0)
+@if (TempData["Message"] != null)
 {
-    <p>No pending recipes.</p>
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
 }
+@if (Model.PendingRecipes.Count == null || !Model.PendingRecipes.Any())
+{
+    <div class="alert alert-info">
+        There are no pending recipes waiting for approval.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var recipe in Model.PendingRecipes)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    @if (!string.IsNullOrWhiteSpace(recipe.ImageUrl))
+                    {
+                        <img src="@recipe.ImageUrl"
+                             class="card-img-top"
+                             alt="@recipe.Title"
+                             style="height:220px; object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center bg-light"
+                             style="height:220px;">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    }
 
-<div class="row">
+                    <div class="card-body">
+                        <h5 class="card-title">@recipe.Title</h5>
 
-    @foreach (var r in Model.PendingRecipes)
-    {
-        <div class="col-md-4">
-            <div class="card mb-3">
-                @if (!string.IsNullOrEmpty(r.ImageUrl))
-                {
-                    <img src="@r.ImageUrl"
-                         class="card-img-top"
-                         style="height:200px;object-fit:cover;" />
-                }
-                <div class="card-body">
+                        <p class="mb-2">
+                            <span class="badge bg-secondary">@recipe.Category?.Name</span>
+                            <span class="badge bg-dark">@recipe.Difficulty?.Name</span>
+                        </p>
 
-                    <h5>@r.Title</h5>
+                        <p class="text-muted mb-2">
+                            <strong>Time:</strong> @recipe.PreparationTime min
+                        </p>
 
-                    <p>
-                        Category: @r.Category.Name
-                        <br />
+                        <p class="text-muted mb-2">
+                            <strong>Author:</strong> @recipe.User?.Username
+                        </p>
 
-                        Difficulty: @r.Difficulty.Name
-                        <br />
+                        <p class="card-text">
+                            @(string.IsNullOrWhiteSpace(recipe.PreparationMethod)
+                                ? "No preparation method."
+                                : (recipe.PreparationMethod.Length > 140
+                                    ? recipe.PreparationMethod.Substring(0, 140) + "..."
+                                    : recipe.PreparationMethod))
+                        </p>
+                    </div>
 
+                    <div class="card-footer bg-white border-0 d-flex gap-2">
+                        <form method="post" asp-page-handler="Approve" class="w-50">
+                            <input type="hidden" name="recipeId" value="@recipe.Id" />
+                            <button type="submit" class="btn btn-success w-100">Approve</button>
+                        </form>
 
-                        Time: @r.PreparationTime min
-
-                    </p>
-
-                    <form method="post" asp-asp-page-handler="Approve">
-
-                        <input type="hidden"
-                               name="recipeId"
-                               value="@r.Id" />
-
-                        <button class="btn btn-success">
-
-                            Approve Recipe
-
-                        </button>
-
-                    </form>
+                        <form method="post" asp-page-handler="Delete" class="w-50">
+                            <input type="hidden" name="recipeId" value="@recipe.Id" />
+                            <button type="submit" class="btn btn-outline-danger w-100">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>     
-    }
-</div>
+        }
+    </div>
+}
+
 

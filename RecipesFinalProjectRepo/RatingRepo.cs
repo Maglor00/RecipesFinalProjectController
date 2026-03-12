@@ -18,36 +18,86 @@ namespace RecipesFinalProjectRepo
             return Retrieve(id);
         }
 
+        public static Rating AddOrUpdateRating(int userId, int recipeId, int score)
+        {
+            string checkSql = $"SELECT * FROM Rating WHERE user_id = {userId} AND recipe_id = {recipeId}";
+
+            SqlDataReader dataReader = SQL.ExecuteQuery(checkSql);
+
+            if (dataReader.Read())
+            {
+                int existingId = Convert.ToInt32(dataReader["id"]);
+
+                string updateSql = $"UPDATE Rating SET score = {score} WHERE id = {existingId}";
+
+                SQL.ExecuteNonQuery(updateSql);
+                return Retrieve(existingId);
+            }
+
+            return Create(new Rating
+            {
+                Score = score,
+                User = new Users { Id = userId },
+                Recipe = new Recipes { Id = recipeId }
+            });
+        }
+
         public static Rating Retrieve(int id)
         {
-            string sql = $"SELECT * FROM Rating WHERE id = {id}";
+            string sql = "SELECT Rating.*, Users.username AS username " +
+                "FROM Rating " +
+                "JOIN Users ON Rating.user_id = Users.id " +
+                $"WHERE Rating.id = {id}";
+
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
             if (dataReader.Read())
             {
                 return Parse(dataReader);
             }
+
             throw new Exception($"Rating with ID: {id} not found");
         }
 
         public static List<Rating> RetrieveAll()
         {
-            string sql = $"SELECT * FROM Rating";
+            string sql = "SELECT Rating.*, Users.username AS username " +
+                "FROM Rating " +
+                "JOIN Users ON Rating.user_id = Users.id";
+
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
             List<Rating> ratings = new List<Rating>();
+
             while (dataReader.Read())
             {
                 ratings.Add(Parse(dataReader));
             }
+
             return ratings;
+        }
+
+        public static double RetrieveAverageRating(int recipeId)
+        {
+            string sql = $"SELECT AVG(CAST(score AS FLOAT)) FROM Rating WHERE recipe_id = {recipeId}";
+            SqlDataReader reader = SQL.ExecuteQuery(sql);
+
+            if (reader.Read() && reader[0] != DBNull.Value)
+                return Convert.ToDouble(reader[0]);
+
+            return 0;
         }
 
         public static Rating Update(Rating ratingToUpdate)
         {
-            if (ratingToUpdate.Id <= 0) throw new Exception($"User id {ratingToUpdate.Id} invalid");
-            string sql = $"UPDATE Rating SET score = '{ratingToUpdate.Score}', " +
-                $"user_id = '{ratingToUpdate.User.Id}', " +
-                $"recipe_id = '{ratingToUpdate.Recipe.Id}' " +
+            if (ratingToUpdate.Id <= 0) 
+                throw new Exception($"Rating id {ratingToUpdate.Id} invalid");
+
+            string sql = "UPDATE Rating SET " +
+                $"score = {ratingToUpdate.Score}, " +
+                $"user_id = {ratingToUpdate.User.Id}, " +
+                $"recipe_id = {ratingToUpdate.Recipe.Id} " +
                 $"WHERE id = {ratingToUpdate.Id}";
+
             SQL.ExecuteNonQuery(sql);
             return Retrieve(ratingToUpdate.Id);
         }
@@ -61,12 +111,35 @@ namespace RecipesFinalProjectRepo
         private static Rating Parse(SqlDataReader dataReader)
         {
             Rating rating = new Rating();
+
             rating.Id = Convert.ToInt32(dataReader["id"]);
             rating.Score = Convert.ToInt32(dataReader["score"]);
-            rating.User.Id = Convert.ToInt32(dataReader["user_id"]);
-            rating.Recipe.Id = Convert.ToInt32(dataReader["recipe_id"]);
+
+            rating.User = new Users
+            {
+                Id = Convert.ToInt32(dataReader["user_id"]),
+                Username = HasColumn(dataReader, "username")
+                    ? Convert.ToString(dataReader["username"])
+                    : ""
+            };
+
+            rating.Recipe = new Recipes
+            {
+                Id = Convert.ToInt32(dataReader["recipe_id"])
+            };
 
             return rating;
+        }
+
+        private static bool HasColumn(SqlDataReader reader, string columnName)
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

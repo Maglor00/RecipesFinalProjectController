@@ -40,6 +40,33 @@ namespace RecipesFinalProjectRepo
             return ingredients;
         }
 
+        public static Ingredients? RetrieveByName(string name)
+        {
+            string sql = $"SELECT * FROM Ingredients WHERE LOWER (name) = LOWER ('{name}');";
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
+            if (dataReader.Read())
+            {
+                return Parse(dataReader);
+            }
+
+            return null;
+        }
+
+        public static Ingredients RetrieveOrCreateByName(string name)
+        {
+            var existing = RetrieveByName(name);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            return Create(new Ingredients
+            {
+                Name = name
+            });
+        }
+
         public static Ingredients Update(Ingredients ingredientsToUpdate)
         {
             if (ingredientsToUpdate.Id <= 0) throw new Exception($"Ingredient id {ingredientsToUpdate.Id} invalid");

@@ -12,9 +12,18 @@ namespace RecipesFinalProjectRepo
     {
         public static Users Create(Users user)
         {
+            string checkSql = $"SELECT * FROM Users WHERE username = '{user.Username}'";
+            SqlDataReader checkReader = SQL.ExecuteQuery(checkSql);
+
+            if (checkReader.Read())
+            {
+                throw new Exception("Username already exists");
+            }
+
             string sql = $"INSERT INTO Users (first_name, last_name, username, password, is_admin) " +
-                $"VALUES ('{user.FirstName}', '{user.LastName}', '{user.Username}', " +
-                $"'{user.Password}', '{user.IsAdmin}');";
+                         $"VALUES ('{user.FirstName}', '{user.LastName}', '{user.Username}', " +
+                         $"'{user.Password}', '{user.IsAdmin}');";
+
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }

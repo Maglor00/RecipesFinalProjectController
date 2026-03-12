@@ -7,7 +7,7 @@ namespace RecipesFinalProjectController.Pages.Admin
 {
     public class RecipeApprovalModel : PageModel
     {
-        public List<Recipes> PendingRecipes { get; set; }
+        public List<Recipes> PendingRecipes { get; set; } = new();
 
         public IActionResult OnGet()
         {
@@ -15,7 +15,6 @@ namespace RecipesFinalProjectController.Pages.Admin
                 return RedirectToPage("/Login");
 
             PendingRecipes = RecipesService.RetrievePendingRecipes();
-
             return Page();
         }
 
@@ -25,6 +24,18 @@ namespace RecipesFinalProjectController.Pages.Admin
                 return RedirectToPage("/Login");
 
             RecipesService.ApproveRecipe(recipeId);
+            TempData["Message"] = "Recipe approved successfully.";
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostDelete(int recipeId)
+        {
+            if (!User.Identity.IsAuthenticated || !IsAdmin())
+                return RedirectToPage("Login");
+
+            RecipesService.Delete(recipeId);
+            TempData["Message"] = "Pending recipe deleted successfully.";
 
             return RedirectToPage();
         }
@@ -32,9 +43,7 @@ namespace RecipesFinalProjectController.Pages.Admin
         // Helper method to check if current user is admin
         private bool IsAdmin()
         {
-            // Assumes is_admin is stored as a claim
-            var isAdminClaim = User.FindFirst("is_admin");
-            return isAdminClaim != null && isAdminClaim.Value == "True";
+            return User.FindFirst("is_admin")?.Value == "True";
         }
     }
 }

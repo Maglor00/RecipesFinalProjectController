@@ -13,12 +13,41 @@ namespace RecipesFinalProjectServices
         
         public static Comments Create(Comments comments)
         {
-            if (comments.CommentText.Equals(null))
-            {
-                throw new InvalidOperationException("The Comment text can't be null");
-            }
+            if (comments == null)
+                throw new InvalidOperationException("Comment is required");
+
+            if (string.IsNullOrWhiteSpace(comments.CommentText))
+                throw new InvalidOperationException("The comment text can't be empty");
+
+            if (comments.User == null || comments.User.Id <= 0)
+                throw new InvalidOperationException("A valid user is required");
+
+            if (comments.Recipe == null || comments.Recipe.Id <= 0)
+                throw new InvalidOperationException("A valid recipe is required");
 
             return CommentsRepo.Create(comments);
+        }
+
+        public static Comments AddComment(int userId, int recipeId, string commentText)
+        {
+            if (string.IsNullOrWhiteSpace(commentText))
+                throw new InvalidOperationException("The comment text can't be empty");
+
+            Comments comment = new Comments
+            {
+                CommentText = commentText.Trim(),
+                User = new Users
+                {
+                    Id = userId,
+                },
+                Recipe = new Recipes
+                {
+                    Id = recipeId
+                },
+                Reply = null
+            };
+
+            return CommentsRepo.Create(comment);
         }
 
         public static Comments Retrieve(int id)
@@ -31,8 +60,22 @@ namespace RecipesFinalProjectServices
             return CommentsRepo.RetrieveAll();
         }
 
+        public static List<Comments> RetrieveRecipeComments(int recipeId)
+        {
+            return CommentsRepo.RetrieveRecipeComments(recipeId);
+        }
+
         public static Comments Update(Comments comments)
         {
+            if (comments == null)
+                throw new InvalidOperationException("Comment is required");
+
+            if (comments.Id <= 0)
+                throw new InvalidOperationException("A valid comment id is required");
+
+            if (string.IsNullOrWhiteSpace(comments.CommentText))
+                throw new InvalidOperationException("The comment text can't be empty");
+
             return CommentsRepo.Update(comments);
         }
 

@@ -1,0 +1,14 @@
+﻿.create-recipe-page #imagePreview {
+    max-width: 320px;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    display: block;
+}
+
+.create-recipe-page .ingredients-table th,
+.create-recipe-page .ingredients-table td {
+    vertical-align: middle;
+}

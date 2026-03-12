@@ -30,6 +30,14 @@ namespace RecipesFinalProjectServices
             return CategoryRepo.RetrieveAll();
         }
 
+        public static Category RetrieveOrCreateByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new InvalidOperationException("The Category name can't be null");
+
+            return CategoryRepo.RetrieveOrCreateByName(name.Trim());
+        }
+
         public static Category Update(Category category)
         {
             return CategoryRepo.Update(category);
