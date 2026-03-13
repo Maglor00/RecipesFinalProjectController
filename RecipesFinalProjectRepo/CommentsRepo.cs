@@ -13,11 +13,12 @@ namespace RecipesFinalProjectRepo
         
         public static Comments Create(Comments comments)
         {
-            string replyValue = comments.Reply == null ? "NULL" : comments.Reply.Id.ToString();
+            string replyValue = comments.Reply == null
+                ? "NULL"
+                : comments.Reply.ToString();
 
-            string sql = $"INSERT INTO Comments (comment_text, user_id, recipe_id, reply_id) " +
-                $"VALUES ('{comments.CommentText}', '{comments.User.Id}', '{comments.Recipe.Id}', " +
-                $"'{comments.Reply.Id}', {replyValue});";
+            string sql = "INSERT INTO Comments (comment_text, user_id, recipe_id, reply_id) " +
+                $"VALUES ('{comments.CommentText}', {comments.User.Id}, {comments.Recipe.Id}, {replyValue});";
 
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
@@ -84,10 +85,11 @@ namespace RecipesFinalProjectRepo
             if (commentsToUpdate.Id <= 0) 
                 throw new Exception($"Comment id {commentsToUpdate.Id} invalid");
 
-            string replyValue = commentsToUpdate.Reply == null ? "NULL" : commentsToUpdate.Reply.Id.ToString();
+            string replyValue = commentsToUpdate.Reply == null 
+                ? "NULL" 
+                : commentsToUpdate.Reply.Id.ToString();
 
-            string sql =
-                "UPDATE Comments SET " +
+            string sql = "UPDATE Comments SET " +
                 $"comment_text = '{commentsToUpdate.CommentText}', " +
                 $"user_id = {commentsToUpdate.User.Id}, " +
                 $"recipe_id = {commentsToUpdate.Recipe.Id}, " +

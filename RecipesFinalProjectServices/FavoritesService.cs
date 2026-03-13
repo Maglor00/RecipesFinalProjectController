@@ -13,7 +13,7 @@ namespace RecipesFinalProjectServices
 
         public static void AddFavorites(int userId, int recipeId)
         {
-            if(FavoritesRepo.IsFavorite(userId, recipeId))
+            if (!FavoritesRepo.IsFavorite(userId, recipeId))
             {
                 FavoritesRepo.AddFavorite(userId, recipeId);
             }

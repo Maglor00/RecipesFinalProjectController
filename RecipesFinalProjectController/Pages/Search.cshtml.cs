@@ -61,8 +61,7 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(
-                User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             if (FavoritesService.IsFavorite(userId, recipeId))
                 FavoritesService.RemoveFavorite(userId, recipeId);

@@ -36,14 +36,17 @@ namespace RecipesFinalProjectServices
             Comments comment = new Comments
             {
                 CommentText = commentText.Trim(),
+
                 User = new Users
                 {
                     Id = userId,
                 },
+
                 Recipe = new Recipes
                 {
                     Id = recipeId
                 },
+
                 Reply = null
             };
 

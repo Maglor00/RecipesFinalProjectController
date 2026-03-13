@@ -1,7 +1,8 @@
 ﻿@model RecipesFinalProjectModels.Recipes
 
-<a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
-    <div class="card recipe-card h-100">
+
+<div class="card recipe-card h-100">
+    <a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
         @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
         {
             <img src="@Model.ImageUrl" class="card-img-top" alt="@Model.Title" />
@@ -12,18 +13,31 @@
                 <span class="text-muted">No image</span>
             </div>
         }
+    </a>
 
-        <div class="card-body">
+    <div class="card-body">
+        <a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
             <h5 class="card-title">@Model.Title</h5>
+        </a>
 
-            <div class="mb-2">
-                <span class="badge-soft">@Model.Category?.Name</span>
-                <span class="badge-soft">@Model.Difficulty?.Name</span>
-            </div>
-
-            <p class="recipe-meta mb-0">
-                Time: @Model.PreparationTime min
-            </p>
+        <div class="mb-2">
+            <span class="badge-soft">@Model.Category?.Name</span>
+            <span class="badge-soft">@Model.Difficulty?.Name</span>
         </div>
+
+        <p class="recipe-meta mb-2">
+            Time: @Model.PreparationTime min
+        </p>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <form method="post" asp-page="/Search" asp-page-handler="ToggleFavorite" class="mt-2">
+                <input type="hidden" name="recipeId" value="@Model.Id" />
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    ❤ Favorite
+                </button>
+            </form>
+        }
     </div>
-</a>
+</div>
+

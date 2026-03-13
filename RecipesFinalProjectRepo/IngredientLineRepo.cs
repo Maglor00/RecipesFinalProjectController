@@ -97,6 +97,12 @@ namespace RecipesFinalProjectRepo
             SQL.ExecuteNonQuery(sql);
         }
 
+        public static void DeleteByRecipeId(int recipeId)
+        {
+            string sql = $"DELETE FROM IngredientLine WHERE recipe_id = {recipeId}";
+            SQL.ExecuteNonQuery(sql);
+        }
+
         private static IngredientLine Parse(SqlDataReader dataReader)
         {
             IngredientLine ingredientLine = new IngredientLine();

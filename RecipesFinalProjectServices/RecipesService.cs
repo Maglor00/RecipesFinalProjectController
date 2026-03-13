@@ -43,6 +43,21 @@ namespace RecipesFinalProjectServices
             return RecipesRepo.RetrieveAll();
         }
 
+        public static List<Recipes> RetrieveByUserId(int userId)
+        {
+            return RecipesRepo.RetrieveByUserId(userId);
+        }
+
+        public static Recipes RetrieveByIdForUser(int recipeId, int userId)
+        {
+            Recipes recipe = RecipesRepo.Retrieve(recipeId);
+
+            if (recipe.User == null || recipe.User.Id != userId)
+                throw new InvalidOperationException("You cannot edit this recipe");
+
+            return recipe;
+        }
+
         public static List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime)
         {
             return RecipesRepo.Search(title, categoryId, difficultyId, maxTime);

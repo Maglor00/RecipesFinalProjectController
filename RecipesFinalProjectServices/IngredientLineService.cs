@@ -52,5 +52,10 @@ namespace RecipesFinalProjectServices
         {
             IngredientLineRepo.Delete(id);
         }
+
+        public static void DeleteByRecipeId(int recipeId)
+        {
+            IngredientLineRepo.DeleteByRecipeId(recipeId);
+        }
     }
 }

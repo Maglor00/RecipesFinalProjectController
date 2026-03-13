@@ -74,6 +74,30 @@ namespace RecipesFinalProjectRepo
             return recipes;
         }
 
+        public static List<Recipes> RetrieveByUserId(int userId)
+        {
+            string sql = $"SELECT Recipes.*, " +
+                 "Category.name AS category_name, " +
+                 "Difficulty.name AS difficulty_name, " +
+                 "Users.username AS username " +
+                 "FROM Recipes " +
+                 "JOIN Category ON Recipes.category_id = Category.id " +
+                 "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
+                 "JOIN Users ON Recipes.user_id = Users.id " +
+                 $"WHERE Recipes.user_id = {userId} " +
+                 "ORDER BY Recipes.id DESC;";
+
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+            List<Recipes> recipes = new List<Recipes>();
+
+            while (dataReader.Read())
+            {
+                recipes.Add(Parse(dataReader));
+            }
+
+            return recipes;
+        }
+
         public static List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime)
         {
             string sql = "SELECT Recipes.*, " +

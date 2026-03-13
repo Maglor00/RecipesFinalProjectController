@@ -1,0 +1,80 @@
+﻿@page
+@model RecipesFinalProjectController.Pages.MyRecipesModel
+@{
+    ViewData["Title"] = "My Recipes";
+}
+
+<h2 class="page-title">My Recipes</h2>
+
+@if (!string.IsNullOrWhiteSpace(Model.Message))
+{
+    <div class="alert alert-success" data-auto-hide="true">
+        @Model.Message
+    </div>
+}
+
+@if (Model.Recipes.Any())
+{
+    <div class="row">
+        @foreach (var recipe in Model.Recipes)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card recipe-card h-100">
+                    @if (!string.IsNullOrWhiteSpace(recipe.ImageUrl))
+                    {
+                        <img src="@recipe.ImageUrl" class="card-img-top" alt="@recipe.Title" />
+                    }
+                    else
+                    {
+                        <div class="recipe-card-placeholder d-flex align-items-center justify-content-center">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">@recipe.Title</h5>
+
+                        <div class="mb-2">
+                            <span class="badge-soft">@recipe.Category?.Name</span>
+                            <span class="badge-soft">@recipe.Difficulty?.Name</span>
+                        </div>
+
+                        <p class="recipe-meta mb-2">
+                            Time: @recipe.PreparationTime min
+                        </p>
+
+                        <p class="mb-3">
+                            @if (recipe.IsApproved)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pending approval</span>
+                            }
+                        </p>
+
+                        <div class="d-grid gap-2">
+                            <a asp-page="/EditRecipe" asp-route-id="@recipe.Id" class="btn btn-main">
+                                Edit Recipe
+                            </a>
+
+                            <form method="post" asp-page-handler="Delete">
+                                <input type="hidden" name="recipeId" value="@recipe.Id" />
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    Delete Recipe
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        You have not created any recipes yet.
+    </div>
+}
