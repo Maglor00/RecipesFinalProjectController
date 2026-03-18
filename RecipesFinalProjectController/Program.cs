@@ -37,7 +37,7 @@ namespace RecipesFinalProjectController
 
             app.UseRouting();
 
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 

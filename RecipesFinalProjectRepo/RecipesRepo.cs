@@ -204,9 +204,9 @@ namespace RecipesFinalProjectRepo
             SQL.ExecuteNonQuery(sql);
         }
 
-        public static List<Recipes> RetrieveTopRecipes()
+        public static List<Recipes> RetrieveTopRecipes(int num = 0)
         {
-            string sql = "SELECT TOP 6 Recipes.*, " +
+            string sql = $"SELECT TOP {num} Recipes.*, " +
                 "Category.name AS category_name, " +
                 "Difficulty.name AS difficulty_name, " +
                 "Users.username AS username, " +

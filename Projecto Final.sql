@@ -4,12 +4,12 @@ USE JD_TP_RC_Recipes;
 
 CREATE TABLE Category
 (id int IDENTITY (1,1) PRIMARY KEY,
-name nvarchar (255), NOT NULL
+name nvarchar (255) NOT NULL
 );
 
 CREATE TABLE Difficulty
 (id int IDENTITY (1,1) PRIMARY KEY,
-name nvarchar (255), NOT NULL
+name nvarchar (255) NOT NULL
 );
 
 CREATE TABLE Ingredients
@@ -31,7 +31,7 @@ CREATE TABLE Recipes
 title nvarchar (255) NOT NULL,
 preparation_method nvarchar (1000),
 preparation_time int,
-image_url nvarchar (500),
+image_url nvarchar (500) NULL,
 category_id int,
 difficulty_id int,
 user_id int,
@@ -54,8 +54,8 @@ FOREIGN KEY (reply_id) REFERENCES Comments(id)
 
 CREATE TABLE IngredientLine
 (id int IDENTITY (1,1) PRIMARY KEY,
-quantity INT,
-measure NVARCHAR (100),
+quantity decimal,
+measure nvarchar (100),
 ingredient_id int,
 recipe_id int,
 FOREIGN KEY (ingredient_id) REFERENCES Ingredients(id),
@@ -154,8 +154,13 @@ INSERT INTO Ingredients (name) VALUES ('Tomatoes');
 INSERT INTO Ingredients (name) VALUES ('Beef');
 
 SELECT * FROM Users;
+SELECT * FROM Recipes;
+SELECT * FROM Ingredients;
+SELECT * FROM Favorites;
 
 DROP DATABASE JD_TP_RC_Recipes;
+
+
 
 ALTER TABLE Recipes
 ADD image_url NVARCHAR(500);
@@ -167,3 +172,7 @@ WHERE title = 'Chocolate Cake';
 UPDATE Recipes
 SET image_url = 'https://images.unsplash.com/photo-1604908176997-431a0b4b0c55'
 WHERE title = 'Spaghetti Carbonara';
+
+UPDATE Users
+SET password = '$2a$11$CIn8psO0wZmSnlrTZRK1vOdFRwTtiFfj8jgxzQrC7OB3kiAR1Phh2'
+WHERE username = 'rafacosta';

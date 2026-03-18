@@ -56,17 +56,11 @@ namespace RecipesFinalProjectRepo
 
         public static bool IsFavorite(int userId, int recipeId)
         {
-            string sql = $"SELECT COUNT(*) FROM Favorites WHERE user_id = {userId} AND recipe_id = {recipeId}";
+            string sql = $"SELECT * FROM Favorites WHERE user_id = {userId} AND recipe_id = {recipeId}";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
 
-            if (dataReader.Read())
-            {
-                int count = Convert.ToInt32(dataReader[0]);
-                return count > 0;
-            }
-
-            return false;
+            return dataReader.HasRows;
         }
 
         private static Recipes Parse(SqlDataReader dataReader)

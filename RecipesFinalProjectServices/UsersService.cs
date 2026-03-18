@@ -45,6 +45,29 @@ namespace RecipesFinalProjectServices
             return UsersRepo.RetrieveAll();
         }
 
+        public static Users UpdateProfile(Users user)
+        {
+            if (user == null || user.Id <= 0)
+                throw new InvalidOperationException("Invalid user.");
+
+            if (string.IsNullOrWhiteSpace(user.FirstName) ||
+                string.IsNullOrWhiteSpace(user.LastName) ||
+                string.IsNullOrWhiteSpace(user.Username))
+            {
+                throw new InvalidOperationException("First name, last name and username are required.");
+            }
+
+            return UsersRepo.UpdateProfile(user);
+        }
+
+        public static void ChangePassword(int userId, string currentPassword,  string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(currentPassword) || string.IsNullOrWhiteSpace(newPassword))
+                throw new InvalidOperationException("Current password and new password are required.");
+
+            UsersRepo.ChangePassword(userId, currentPassword, newPassword);
+        }
+
         public static Users Update(Users user)
         {
             return UsersRepo.Update(user);

@@ -83,9 +83,11 @@ namespace RecipesFinalProjectServices
             RecipesRepo.ApproveRecipe(id);
         }
 
-        public static List<Recipes> RetrieveTopRecipes()
+        public static List<Recipes> RetrieveTopRecipes(int num)
         {
-            return RecipesRepo.RetrieveTopRecipes();
+            List<Recipes> recipes = RecipesRepo.RetrieveAll();
+            //recipes.OrderBy(x => x.rating;
+            return recipes.Take(num).ToList();
         }
     }
 }

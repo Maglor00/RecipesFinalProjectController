@@ -55,19 +55,6 @@ namespace RecipesFinalProjectRepo
             return null;
         }
 
-        public static Difficulty RetrieveOrCreateByName(string name)
-        {
-            var existing = RetrieveByName(name);
-            if(existing != null)
-            {
-                return existing;
-            }
-
-            return Create(new Difficulty
-            {
-                Name = name
-            });
-        }
 
         public static Difficulty Update(Difficulty difficultyToUpdate)
         {

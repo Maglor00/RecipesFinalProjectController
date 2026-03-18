@@ -7,6 +7,7 @@ namespace RecipesFinalProjectController.Pages
 {
     public class IndexModel : PageModel
     {
+        private const int NumberOfTopRecipes = 5;
         private readonly ILogger<IndexModel> _logger;
 
         public List<Recipes> TopRecipes { get; set; } = new();
@@ -17,7 +18,7 @@ namespace RecipesFinalProjectController.Pages
 
         public void OnGet()
         {
-            TopRecipes = RecipesService.RetrieveTopRecipes();
+            TopRecipes = RecipesService.RetrieveTopRecipes(NumberOfTopRecipes);
         }
     }
 }

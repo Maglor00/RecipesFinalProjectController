@@ -36,7 +36,17 @@ namespace RecipesFinalProjectServices
             if (string.IsNullOrWhiteSpace(name))
                 throw new InvalidOperationException("The Difficulty name can't be null");
 
-            return DifficultyRepo.RetrieveOrCreateByName(name.Trim());
+
+            var existing = DifficultyRepo.RetrieveByName(name);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            return Create(new Difficulty
+            {
+                Name = name
+            });
         }
 
         public static Difficulty Update(Difficulty difficulty)

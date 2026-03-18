@@ -1,0 +1,11 @@
+﻿.profile-page .security-box {
+    min-height: 100%;
+}
+
+.profile-page #changePasswordContainer {
+    display: none;
+}
+
+.profile-page .profile-label {
+    font-weight: 600;
+}
