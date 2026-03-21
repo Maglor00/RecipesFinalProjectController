@@ -11,11 +11,11 @@ namespace RecipesFinalProjectModels
         public int Id { get; set; }
         public int Score { get; set; }
         public Users User { get; set; }
-        public Recipes Recipe { get; set; }
+        
 
         public string ToString()
         {
-            return "\tId:\t" + Id + "\tScore:\t" + Score + "\tUser:\t" + User + "\tRecipe:\t" + Recipe;
+            return "\tId:\t" + Id + "\tScore:\t" + Score + "\tUser:\t" + User;
         }
 
         public override bool Equals(object? obj)

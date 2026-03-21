@@ -10,12 +10,11 @@ namespace RecipesFinalProjectController.Pages
 {
     public class SearchModel : PageModel
     {
-        
-
         public List<Recipes> Recipes { get; set; } = new();
         public List<Category> Categories { get; set; } = new();
         public List<Difficulty> Difficulties { get; set; } = new();
         public List<int> FavoriteRecipeIds { get; set; } = new();
+
 
         [BindProperty(SupportsGet = true)]
         public string Title { get; set; }
@@ -29,8 +28,8 @@ namespace RecipesFinalProjectController.Pages
         [BindProperty(SupportsGet = true)]
         public double? MaxTime { get; set; }
 
-        public bool IsLoggedIn => User.Identity.IsAuthenticated;
-            
+        public bool IsLoggedIn => User.Identity != null && User.Identity.IsAuthenticated;
+
 
         public void OnGet()
         {
@@ -43,16 +42,10 @@ namespace RecipesFinalProjectController.Pages
                 DifficultyId,
                 MaxTime);
 
-            if (User.Identity.IsAuthenticated)
+            if (IsLoggedIn)
             {
-                int userId = int.Parse(
-                    User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-                var favorites =
-                    FavoritesService.GetUserFavorites(userId);
-
-                FavoriteRecipeIds =
-                    favorites.Select(r => r.Id).ToList();
+                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+                FavoriteRecipeIds = FavoritesService.GetUserFavorites(userId).Select(r => r.Id).ToList();
             }
         }
 
@@ -61,12 +54,9 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            if (FavoritesService.IsFavorite(userId, recipeId))
-                FavoritesService.RemoveFavorite(userId, recipeId);
-            else
-                FavoritesService.AddFavorites(userId, recipeId);
+            FavoritesService.ToggleFavorite(userId, recipeId);
 
             return RedirectToPage(new
             {

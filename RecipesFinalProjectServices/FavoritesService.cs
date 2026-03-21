@@ -13,15 +13,33 @@ namespace RecipesFinalProjectServices
 
         public static void AddFavorites(int userId, int recipeId)
         {
-            if (!FavoritesRepo.IsFavorite(userId, recipeId))
-            {
-                FavoritesRepo.AddFavorite(userId, recipeId);
-            }
+            if (userId <= 0 || recipeId <= 0)
+                throw new InvalidOperationException("Invalid favorite request.");
+
+            if (FavoritesRepo.IsFavorite(userId, recipeId))
+                return;
+
+            FavoritesRepo.AddFavorite(userId, recipeId);
         }
 
         public static void RemoveFavorite(int userId, int recipeId)
         {
+            if (userId <= 0 || recipeId <= 0)
+                throw new InvalidOperationException("Invalid favorite request.");
+
             FavoritesRepo.RemoveFavorite(userId, recipeId);
+        }
+
+        public static void ToggleFavorite(int userId, int recipeId)
+        {
+            if(IsFavorite(userId, recipeId))
+            {
+                RemoveFavorite(userId, recipeId);
+            }
+            else
+            {
+                AddFavorites(userId, recipeId);
+            }
         }
 
         public static List<Recipes> GetUserFavorites(int userId)

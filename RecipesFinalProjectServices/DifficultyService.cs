@@ -13,10 +13,8 @@ namespace RecipesFinalProjectServices
     {
         public static Difficulty Create(Difficulty difficulty)
         {
-            if (difficulty.Name.Equals(null))
-            {
-                throw new InvalidOperationException("The Difficulty name can't be null");
-            }
+            if (difficulty == null || string.IsNullOrWhiteSpace(difficulty.Name))
+                throw new InvalidOperationException("The difficulty name can't be empty.");
 
             return DifficultyRepo.Create(difficulty);
         }
@@ -51,6 +49,12 @@ namespace RecipesFinalProjectServices
 
         public static Difficulty Update(Difficulty difficulty)
         {
+            if (difficulty == null || difficulty.Id <= 0)
+                throw new InvalidOperationException("Invalid difficulty.");
+
+            if (string.IsNullOrWhiteSpace(difficulty.Name))
+                throw new InvalidOperationException("The difficulty name can't be empty.");
+
             return DifficultyRepo.Update(difficulty);
         }
 

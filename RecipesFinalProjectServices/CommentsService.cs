@@ -10,7 +10,6 @@ namespace RecipesFinalProjectServices
 {
     public static class CommentsService
     {
-        
         public static Comments Create(Comments comments)
         {
             if (comments == null)
@@ -30,27 +29,22 @@ namespace RecipesFinalProjectServices
 
         public static Comments AddComment(int userId, int recipeId, string commentText)
         {
-            if (string.IsNullOrWhiteSpace(commentText))
-                throw new InvalidOperationException("The comment text can't be empty");
+            if (userId <= 0)
+                throw new InvalidOperationException("Invalid user.");
 
-            Comments comment = new Comments
+            if (recipeId <= 0)
+                throw new InvalidOperationException("Invalid recipe.");
+
+            if (string.IsNullOrWhiteSpace(commentText))
+                throw new InvalidOperationException("The comment text can't be empty.");
+
+            return CommentsRepo.Create(new Comments
             {
                 CommentText = commentText.Trim(),
-
-                User = new Users
-                {
-                    Id = userId,
-                },
-
-                Recipe = new Recipes
-                {
-                    Id = recipeId
-                },
-
+                User = new Users { Id = userId },
+                Recipe = new Recipes { Id = recipeId },
                 Reply = null
-            };
-
-            return CommentsRepo.Create(comment);
+            });
         }
 
         public static Comments Retrieve(int id)
@@ -70,14 +64,17 @@ namespace RecipesFinalProjectServices
 
         public static Comments Update(Comments comments)
         {
-            if (comments == null)
-                throw new InvalidOperationException("Comment is required");
-
-            if (comments.Id <= 0)
-                throw new InvalidOperationException("A valid comment id is required");
+            if(comments == null || comments.Id <= 0)
+                throw new InvalidOperationException("Invalid comment.");
 
             if (string.IsNullOrWhiteSpace(comments.CommentText))
-                throw new InvalidOperationException("The comment text can't be empty");
+                throw new InvalidOperationException("The comment text can't be empty.");
+
+            if (comments.User == null || comments.User.Id <= 0)
+                throw new InvalidOperationException("A valid user is required.");
+
+            if (comments.Recipe == null || comments.Recipe.Id <= 0)
+                throw new InvalidOperationException("A valid recipe is required.");
 
             return CommentsRepo.Update(comments);
         }

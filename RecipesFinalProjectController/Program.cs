@@ -1,5 +1,4 @@
 
-
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace RecipesFinalProjectController
@@ -20,6 +19,7 @@ namespace RecipesFinalProjectController
                     options.LogoutPath = "/Logout";
                     options.ExpireTimeSpan = TimeSpan.FromHours(2);
                 });
+
             builder.Services.AddAuthorization();
 
             var app = builder.Build();

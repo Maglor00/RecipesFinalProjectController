@@ -34,11 +34,13 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Difficulty";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Difficulty> difficulties = new List<Difficulty>();
+            List<Difficulty> difficulties = new();
+
             while (dataReader.Read())
             {
                 difficulties.Add(Parse(dataReader));
             }
+
             return difficulties;
         }
 
@@ -54,11 +56,9 @@ namespace RecipesFinalProjectRepo
 
             return null;
         }
-
-
         public static Difficulty Update(Difficulty difficultyToUpdate)
         {
-            if (difficultyToUpdate.Id <= 0) throw new Exception($"User id {difficultyToUpdate.Id} invalid");
+
             string sql = $"UPDATE Difficulty SET name = '{difficultyToUpdate.Name}' " +
                 $"WHERE id = {difficultyToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
@@ -73,11 +73,11 @@ namespace RecipesFinalProjectRepo
 
         private static Difficulty Parse(SqlDataReader datareader)
         {
-            Difficulty difficulty = new Difficulty();
-            difficulty.Id = Convert.ToInt32(datareader["id"]);
-            difficulty.Name = Convert.ToString(datareader["name"]);
-
-            return difficulty;
+            return new Difficulty
+            {
+                Id = Convert.ToInt32(datareader["id"]),
+                Name = Convert.ToString(datareader["name"])
+            }; 
         }
     }
 }

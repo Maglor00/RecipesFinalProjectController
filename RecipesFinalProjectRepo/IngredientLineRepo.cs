@@ -17,11 +17,8 @@ namespace RecipesFinalProjectRepo
             string sql = $"INSERT INTO IngredientLine (quantity, measure, ingredient_id, recipe_id) " +
                          $"VALUES ({ingredientLine.Quantity}, '{ingredientLine.Measure}', " +
                          $"{ingredientLine.Ingredient.Id}, {ingredientLine.Recipe.Id});";
+
             int id = SQL.ExecuteNonQuery(sql);
-
-            if (id <= 0)
-                throw new Exception("Ingredient line was not created");
-
             return ingredientLine;
         }
 
@@ -38,6 +35,7 @@ namespace RecipesFinalProjectRepo
             {
                 return Parse(dataReader);
             }
+
             throw new Exception($"Ingredient Line with ID: {id} not found");
         }
 
@@ -48,11 +46,13 @@ namespace RecipesFinalProjectRepo
                          "JOIN Ingredients ON IngredientLine.ingredient_id = Ingredients.id";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<IngredientLine> ingredientLines = new List<IngredientLine>();
+            List<IngredientLine> ingredientLines = new();
+
             while (dataReader.Read())
             {
                 ingredientLines.Add(Parse(dataReader));
             }
+
             return ingredientLines;
         }
 
@@ -64,7 +64,7 @@ namespace RecipesFinalProjectRepo
                          $"WHERE IngredientLine.recipe_id = {recipeId}";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<IngredientLine> ingredientLines = new List<IngredientLine>();
+            List<IngredientLine> ingredientLines = new();
 
             while (dataReader.Read())
             {
@@ -76,8 +76,6 @@ namespace RecipesFinalProjectRepo
 
         public static IngredientLine Update(IngredientLine ingredientLineToUpdate)
         {
-            if (ingredientLineToUpdate.Id <= 0) 
-                throw new Exception($"IngredientLine id {ingredientLineToUpdate.Id} invalid");
            
             string sql = $"UPDATE IngredientLine SET " +
                 $"ingredient_id = '{ingredientLineToUpdate.Ingredient.Id}', " +

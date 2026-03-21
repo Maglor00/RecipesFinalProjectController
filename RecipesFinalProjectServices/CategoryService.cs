@@ -12,10 +12,8 @@ namespace RecipesFinalProjectServices
     {
         public static Category Create(Category category)
         {
-            if(category.Name.Equals(null))
-            {
-                throw new InvalidOperationException("The Category name can't be null");
-            }
+            if (category == null || string.IsNullOrWhiteSpace(category.Name))
+                throw new InvalidOperationException("The category name can't be empty.");
 
             return CategoryRepo.Create(category);
         }
@@ -33,13 +31,29 @@ namespace RecipesFinalProjectServices
         public static Category RetrieveOrCreateByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new InvalidOperationException("The Category name can't be null");
+                throw new InvalidOperationException("The category name can't be empty");
 
-            return CategoryRepo.RetrieveOrCreateByName(name.Trim());
+            var existing = CategoryRepo.RetrieveByName(name);
+
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            return Create(new Category
+            {
+                Name = name
+            });
         }
 
         public static Category Update(Category category)
         {
+            if (category == null || category.Id <= 0)
+                throw new InvalidOperationException("Invalid category.");
+
+            if (string.IsNullOrWhiteSpace(category.Name))
+                throw new InvalidOperationException("The category name can't be empty.");
+
             return CategoryRepo.Update(category);
         }
 

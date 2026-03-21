@@ -11,8 +11,12 @@ namespace RecipesFinalProjectController.Pages.Admin
 
         public IActionResult OnGet()
         {
-            if (!User.Identity.IsAuthenticated || !IsAdmin())
+            if (!User.Identity!.IsAuthenticated)
                 return RedirectToPage("/Login");
+
+            bool isAdmin = User.FindFirst("is_admin")?.Value == "True";
+            if (!isAdmin)
+                return RedirectToPage("/Index");
 
             PendingRecipes = RecipesService.RetrievePendingRecipes();
             return Page();
@@ -20,30 +24,30 @@ namespace RecipesFinalProjectController.Pages.Admin
 
         public IActionResult OnPostApprove(int recipeId)
         {
-            if (!User.Identity.IsAuthenticated || !IsAdmin())
+            if (!User.Identity!.IsAuthenticated)
                 return RedirectToPage("/Login");
+
+            bool isAdmin = User.FindFirst("is_admin")?.Value == "True";
+            if (!isAdmin)
+                return RedirectToPage("/Index");
 
             RecipesService.ApproveRecipe(recipeId);
             TempData["Message"] = "Recipe approved successfully.";
-
             return RedirectToPage();
         }
 
         public IActionResult OnPostDelete(int recipeId)
         {
-            if (!User.Identity.IsAuthenticated || !IsAdmin())
-                return RedirectToPage("Login");
+            if (!User.Identity!.IsAuthenticated)
+                return RedirectToPage("/Login");
+
+            bool isAdmin = User.FindFirst("is_admin")?.Value == "True";
+            if (!isAdmin)
+                return RedirectToPage("/Index");
 
             RecipesService.Delete(recipeId);
-            TempData["Message"] = "Pending recipe deleted successfully.";
-
+            TempData["Message"] = "Recipe deleted successfully.";
             return RedirectToPage();
-        }
-
-        // Helper method to check if current user is admin
-        private bool IsAdmin()
-        {
-            return User.FindFirst("is_admin")?.Value == "True";
         }
     }
 }

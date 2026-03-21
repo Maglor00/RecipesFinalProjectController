@@ -1,6 +1,5 @@
 ﻿@model RecipesFinalProjectModels.Recipes
 
-
 <div class="card recipe-card h-100">
     <a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
         @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
@@ -25,19 +24,9 @@
             <span class="badge-soft">@Model.Difficulty?.Name</span>
         </div>
 
-        <p class="recipe-meta mb-2">
+        <p class="recipe-meta mb-0">
             Time: @Model.PreparationTime min
         </p>
-
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
-        {
-            <form method="post" asp-page="/Search" asp-page-handler="ToggleFavorite" class="mt-2">
-                <input type="hidden" name="recipeId" value="@Model.Id" />
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                    ❤ Favorite
-                </button>
-            </form>
-        }
     </div>
 </div>
 

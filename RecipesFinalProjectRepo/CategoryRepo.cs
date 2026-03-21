@@ -21,10 +21,12 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Category WHERE id = {id};";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
             if (dataReader.Read())
             {
                 return Parse(dataReader);
             }
+
             throw new Exception($"Category with ID: {id} not found");
         }
 
@@ -32,11 +34,13 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Category;";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Category> categories = new List<Category>();
+            List<Category> categories = new();
+
             while (dataReader.Read())
             {
                 categories.Add(Parse(dataReader));
             }
+
             return categories;
         }
 
@@ -52,24 +56,9 @@ namespace RecipesFinalProjectRepo
 
             return null;
         }
-
-        public static Category RetrieveOrCreateByName(string name)
-        {
-            var existing = RetrieveByName(name);
-            if (existing != null)
-            {
-                return existing;
-            }
-                
-            return Create(new Category
-            {
-                Name = name
-            }); 
-        }
-
         public static Category Update(Category categoryToUpdate)
         {
-            if (categoryToUpdate.Id <= 0) throw new Exception($"Category id {categoryToUpdate.Id} invalid");
+
             string sql = $"UPDATE Category SET Name = '{categoryToUpdate.Name}' WHERE ID = {categoryToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(categoryToUpdate.Id);
@@ -83,11 +72,11 @@ namespace RecipesFinalProjectRepo
 
         private static Category Parse(SqlDataReader dataReader)
         {
-            Category category = new Category();
-            category.Id = Convert.ToInt32(dataReader["id"]);
-            category.Name = Convert.ToString(dataReader["name"]);
-
-            return category;
+            return new Category
+            {
+                Id = Convert.ToInt32(dataReader["id"]),
+                Name = Convert.ToString(dataReader["name"])
+            };
         }
     }
 }

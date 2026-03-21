@@ -16,6 +16,8 @@ namespace RecipesFinalProjectRepo
                 ? "NULL"
                 : $"'{recipes.ImageUrl}'";
 
+            int isApproved = recipes.IsApproved ? 1 : 0;
+
             string sql = "INSERT INTO Recipes " +
                          "(title, preparation_method, preparation_time, category_id, difficulty_id, user_id, is_approved, image_url) " +
                          $"VALUES ('{recipes.Title}', " +
@@ -24,7 +26,7 @@ namespace RecipesFinalProjectRepo
                          $"{recipes.Category.Id}, " +
                          $"{recipes.Difficulty.Id}, " +
                          $"{recipes.User.Id}, " +
-                         $"0, " +
+                         $"{isApproved}, " +
                          $"{imageUrlValue});";
 
             int id = SQL.ExecuteNonQuery(sql);
@@ -65,7 +67,7 @@ namespace RecipesFinalProjectRepo
                          "WHERE Recipes.is_approved = 1;";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Recipes> recipes = new List<Recipes>();
+            List<Recipes> recipes = new();
 
             while (dataReader.Read())
             {
@@ -77,18 +79,18 @@ namespace RecipesFinalProjectRepo
         public static List<Recipes> RetrieveByUserId(int userId)
         {
             string sql = $"SELECT Recipes.*, " +
-                 "Category.name AS category_name, " +
-                 "Difficulty.name AS difficulty_name, " +
-                 "Users.username AS username " +
-                 "FROM Recipes " +
-                 "JOIN Category ON Recipes.category_id = Category.id " +
-                 "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
-                 "JOIN Users ON Recipes.user_id = Users.id " +
-                 $"WHERE Recipes.user_id = {userId} " +
-                 "ORDER BY Recipes.id DESC;";
+                         "Category.name AS category_name, " +
+                         "Difficulty.name AS difficulty_name, " +
+                         "Users.username AS username " +
+                         "FROM Recipes " +
+                         "JOIN Category ON Recipes.category_id = Category.id " +
+                         "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
+                         "JOIN Users ON Recipes.user_id = Users.id " +
+                         $"WHERE Recipes.user_id = {userId} " +
+                         "ORDER BY Recipes.id DESC;";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Recipes> recipes = new List<Recipes>();
+            List<Recipes> recipes = new();
 
             while (dataReader.Read())
             {
@@ -101,14 +103,14 @@ namespace RecipesFinalProjectRepo
         public static List<Recipes> Search(string title, int? categoryId, int? difficultyId, double? maxTime)
         {
             string sql = "SELECT Recipes.*, " +
-             "Category.name AS category_name, " +
-             "Difficulty.name AS difficulty_name, " +
-             "Users.username AS username " +
-             "FROM Recipes " +
-             "JOIN Category ON Recipes.category_id = Category.id " +
-             "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
-             "JOIN Users ON Recipes.user_id = Users.id " +
-             "WHERE Recipes.is_approved = 1 ";
+                         "Category.name AS category_name, " +
+                         "Difficulty.name AS difficulty_name, " +
+                         "Users.username AS username " +
+                         "FROM Recipes " +
+                         "JOIN Category ON Recipes.category_id = Category.id " +
+                         "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
+                         "JOIN Users ON Recipes.user_id = Users.id " +
+                         "WHERE Recipes.is_approved = 1 ";
 
             if (!string.IsNullOrEmpty(title))
                 sql += $"AND LOWER(Recipes.title) LIKE LOWER('%{title}%') ";
@@ -123,7 +125,7 @@ namespace RecipesFinalProjectRepo
                 sql += $"AND Recipes.preparation_time <= {maxTime.Value} ";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Recipes> recipes = new List<Recipes>();
+            List<Recipes> recipes = new();
 
             while (dataReader.Read())
             {
@@ -135,12 +137,12 @@ namespace RecipesFinalProjectRepo
 
         public static Recipes Update(Recipes recipesToUpdate)
         {
-            if (recipesToUpdate.Id <= 0) 
-                throw new Exception($"Recipe id {recipesToUpdate.Id} invalid");
 
             string imageUrlValue = string.IsNullOrWhiteSpace(recipesToUpdate.ImageUrl)
                 ? "NULL"
                 : $"'{recipesToUpdate.ImageUrl}'";
+
+            int isApproved = recipesToUpdate.IsApproved ? 1 : 0;
 
             string sql = $"UPDATE Recipes SET " +
                          $"title = '{recipesToUpdate.Title}', " +
@@ -149,7 +151,7 @@ namespace RecipesFinalProjectRepo
                          $"category_id = {recipesToUpdate.Category.Id}, " +
                          $"difficulty_id = {recipesToUpdate.Difficulty.Id}, " +
                          $"user_id = {recipesToUpdate.User.Id}, " +
-                         $"is_approved = '{recipesToUpdate.IsApproved}', " +
+                         $"is_approved = '{isApproved}', " +
                          $"image_url = {imageUrlValue} " +
                          $"WHERE id = {recipesToUpdate.Id};";
 
@@ -207,21 +209,21 @@ namespace RecipesFinalProjectRepo
         public static List<Recipes> RetrieveTopRecipes(int num = 0)
         {
             string sql = $"SELECT TOP {num} Recipes.*, " +
-                "Category.name AS category_name, " +
-                "Difficulty.name AS difficulty_name, " +
-                "Users.username AS username, " +
-                "AVG(CAST(Rating.score AS FLOAT)) AS avg_rating " +
-                "FROM Recipes " +
-                "JOIN Rating ON Recipes.id = Rating.recipe_id " +
-                "JOIN Category ON Recipes.category_id = Category.id " +
-                "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
-                "JOIN Users ON Recipes.user_id = Users.id " +
-                "WHERE Recipes.is_approved = 1 " +
-                "GROUP BY Recipes.id, Recipes.title, Recipes.preparation_method, Recipes.preparation_time, Recipes.category_id, Recipes.difficulty_id, Recipes.user_id, Recipes.is_approved, Recipes.image_url, Category.name, Difficulty.name, Users.username " +
-                "ORDER BY avg_rating DESC;";
+                         "Category.name AS category_name, " +
+                         "Difficulty.name AS difficulty_name, " +
+                         "Users.username AS username, " +
+                         "AVG(CAST(Rating.score AS FLOAT)) AS avg_rating " +
+                         "FROM Recipes " +
+                         "JOIN Rating ON Recipes.id = Rating.recipe_id " +
+                         "JOIN Category ON Recipes.category_id = Category.id " +
+                         "JOIN Difficulty ON Recipes.difficulty_id = Difficulty.id " +
+                         "JOIN Users ON Recipes.user_id = Users.id " +
+                         "WHERE Recipes.is_approved = 1 " +
+                         "GROUP BY Recipes.id, Recipes.title, Recipes.preparation_method, Recipes.preparation_time, Recipes.category_id, Recipes.difficulty_id, Recipes.user_id, Recipes.is_approved, Recipes.image_url, Category.name, Difficulty.name, Users.username " +
+                         "ORDER BY avg_rating DESC;";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Recipes> recipes = new List<Recipes>();
+            List<Recipes> recipes = new();
 
             while (dataReader.Read())
             {

@@ -8,7 +8,7 @@ namespace RecipesFinalProjectController.Pages
 {
     public class RecipeDetailsModel : PageModel
     {
-        public Recipes Recipe { get; set; }
+        public Recipes Recipe { get; set; } = new();
         public List<IngredientLine> Ingredients { get; set; } = new();
         public List<Comments> Comments { get; set; } = new();
         public double AverageRating { get; set; }
@@ -18,7 +18,7 @@ namespace RecipesFinalProjectController.Pages
         public int Score { get; set; }
 
         [BindProperty]
-        public string CommentText { get; set; }
+        public string CommentText { get; set; } = string.Empty;
 
         public IActionResult OnGet(int id)
         {
@@ -32,15 +32,7 @@ namespace RecipesFinalProjectController.Pages
                 return RedirectToPage("/Login");
 
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-            if (FavoritesService.IsFavorite(userId, recipeId))
-            {
-                FavoritesService.RemoveFavorite(userId, recipeId);
-            }             
-            else
-            {
-                FavoritesService.AddFavorites(userId, recipeId);
-            }
+            FavoritesService.ToggleFavorite(userId, recipeId);
 
             return RedirectToPage(new { id = recipeId });
         }
@@ -50,8 +42,7 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             RatingService.AddRating(userId, recipeId, Score);
 
             return RedirectToPage(new { id = recipeId });
@@ -62,8 +53,7 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             CommentsService.AddComment(userId, recipeId, CommentText);
 
             return RedirectToPage(new { id = recipeId });
@@ -76,11 +66,9 @@ namespace RecipesFinalProjectController.Pages
             Comments = CommentsService.RetrieveRecipeComments(recipeId);
             AverageRating = RatingService.RetrieveAverageRating(recipeId);
 
-            IsFavorite = false;
-
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
                 IsFavorite = FavoritesService.IsFavorite(userId, recipeId);
             }
         }

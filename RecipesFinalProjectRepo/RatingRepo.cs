@@ -10,44 +10,37 @@ namespace RecipesFinalProjectRepo
 {
     public static class RatingRepo
     {
-        public static Rating Create(Rating rating)
+        public static Rating Create(Rating rating, int recipeId)
         {
             string sql = $"INSERT INTO Rating (score, user_id, recipe_id)" +
-                $"VALUES ('{rating.Score}', '{rating.User.Id}', '{rating.Recipe.Id}');";
+                $"VALUES ({rating.Score}, {rating.User.Id}, {recipeId});";
+
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
 
-        public static Rating AddOrUpdateRating(int userId, int recipeId, int score)
+        public static Rating? RetrieveByUserAndRecipe(int userId, int recipeId)
         {
-            string checkSql = $"SELECT * FROM Rating WHERE user_id = {userId} AND recipe_id = {recipeId}";
+            string sql = $"SELECT Rating.*, Users.username AS username FROM Rating " +
+                         $"JOIN Users ON Rating.user_id = Users.id " +
+                         $"WHERE Rating.user_id = {userId} AND Rating.recipe_id = {recipeId}";
 
-            SqlDataReader dataReader = SQL.ExecuteQuery(checkSql);
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
 
             if (dataReader.Read())
             {
-                int existingId = Convert.ToInt32(dataReader["id"]);
-
-                string updateSql = $"UPDATE Rating SET score = {score} WHERE id = {existingId}";
-
-                SQL.ExecuteNonQuery(updateSql);
-                return Retrieve(existingId);
+                return Parse(dataReader);
             }
 
-            return Create(new Rating
-            {
-                Score = score,
-                User = new Users { Id = userId },
-                Recipe = new Recipes { Id = recipeId }
-            });
+            return null;
         }
 
         public static Rating Retrieve(int id)
         {
             string sql = "SELECT Rating.*, Users.username AS username " +
-                "FROM Rating " +
-                "JOIN Users ON Rating.user_id = Users.id " +
-                $"WHERE Rating.id = {id}";
+                         "FROM Rating " +
+                         "JOIN Users ON Rating.user_id = Users.id " +
+                         $"WHERE Rating.id = {id}";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
 
@@ -62,11 +55,11 @@ namespace RecipesFinalProjectRepo
         public static List<Rating> RetrieveAll()
         {
             string sql = "SELECT Rating.*, Users.username AS username " +
-                "FROM Rating " +
-                "JOIN Users ON Rating.user_id = Users.id";
+                         "FROM Rating " +
+                         "JOIN Users ON Rating.user_id = Users.id";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Rating> ratings = new List<Rating>();
+            List<Rating> ratings = new();
 
             while (dataReader.Read())
             {
@@ -87,16 +80,14 @@ namespace RecipesFinalProjectRepo
             return 0;
         }
 
-        public static Rating Update(Rating ratingToUpdate)
+        public static Rating Update(Rating ratingToUpdate, int recipeId)
         {
-            if (ratingToUpdate.Id <= 0) 
-                throw new Exception($"Rating id {ratingToUpdate.Id} invalid");
 
             string sql = "UPDATE Rating SET " +
-                $"score = {ratingToUpdate.Score}, " +
-                $"user_id = {ratingToUpdate.User.Id}, " +
-                $"recipe_id = {ratingToUpdate.Recipe.Id} " +
-                $"WHERE id = {ratingToUpdate.Id}";
+                         $"score = {ratingToUpdate.Score}, " +
+                         $"user_id = {ratingToUpdate.User.Id}, " +
+                         $"recipe_id = {recipeId} " +
+                     $"WHERE id = {ratingToUpdate.Id}";
 
             SQL.ExecuteNonQuery(sql);
             return Retrieve(ratingToUpdate.Id);
@@ -121,11 +112,6 @@ namespace RecipesFinalProjectRepo
                 Username = HasColumn(dataReader, "username")
                     ? Convert.ToString(dataReader["username"])
                     : ""
-            };
-
-            rating.Recipe = new Recipes
-            {
-                Id = Convert.ToInt32(dataReader["recipe_id"])
             };
 
             return rating;

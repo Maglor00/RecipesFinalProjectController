@@ -15,7 +15,7 @@ namespace RecipesFinalProjectRepo
         {
             string replyValue = comments.Reply == null
                 ? "NULL"
-                : comments.Reply.ToString();
+                : comments.Reply.Id.ToString();
 
             string sql = "INSERT INTO Comments (comment_text, user_id, recipe_id, reply_id) " +
                 $"VALUES ('{comments.CommentText}', {comments.User.Id}, {comments.Recipe.Id}, {replyValue});";
@@ -50,7 +50,7 @@ namespace RecipesFinalProjectRepo
                 "JOIN Users ON Comments.user_id = Users.id";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Comments> comments = new List<Comments>();
+            List<Comments> comments = new();
 
             while (dataReader.Read())
             {
@@ -70,7 +70,7 @@ namespace RecipesFinalProjectRepo
                 "ORDER BY Comments.id DESC";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Comments> comments = new List<Comments>();
+            List<Comments> comments = new();
 
             while (dataReader.Read())
             {
