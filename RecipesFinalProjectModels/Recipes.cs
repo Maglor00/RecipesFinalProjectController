@@ -19,6 +19,7 @@ namespace RecipesFinalProjectModels
         public Users User { get; set; }
         public Rating Rating { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsFavorite { get; set; }
 
         public string ToString()
         {

@@ -69,7 +69,23 @@ namespace RecipesFinalProjectController.Pages
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
                 IsFavorite = FavoritesService.IsFavorite(userId, recipeId);
+
+                var existingRating= RatingService.RetrieveByUserAndRecipe(userId, recipeId);
+                if (existingRating != null)
+                {
+                    Score = existingRating.Score;
+                }
+                else
+                {
+                    Score = 0;
+                }
+            }
+            else
+            {
+                IsFavorite = false;
+                Score = 0;
             }
         }
     }

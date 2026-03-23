@@ -43,8 +43,14 @@ namespace RecipesFinalProjectServices
 
             return Create(new Difficulty
             {
-                Name = name
+                Name = name,
+                IsApproved = false,
             });
+        }
+
+        public static List<Difficulty> RetrievePending()
+        {
+            return DifficultyRepo.RetrievePending();
         }
 
         public static Difficulty Update(Difficulty difficulty)
@@ -56,6 +62,11 @@ namespace RecipesFinalProjectServices
                 throw new InvalidOperationException("The difficulty name can't be empty.");
 
             return DifficultyRepo.Update(difficulty);
+        }
+
+        public static void Approve(int id)
+        {
+            DifficultyRepo.Approve(id);
         }
 
         public static void Delete(int id)

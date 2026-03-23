@@ -44,7 +44,14 @@ namespace RecipesFinalProjectServices
 
         public static List<Recipes> GetUserFavorites(int userId)
         {
-            return FavoritesRepo.GetUserFavorites(userId);
+            List<Recipes> favorites = FavoritesRepo.GetUserFavorites(userId);
+
+            foreach (var recipe in favorites)
+            {
+                recipe.IsFavorite = true;
+            }
+
+            return favorites;
         }
 
         public static bool IsFavorite(int userId, int recipeId)

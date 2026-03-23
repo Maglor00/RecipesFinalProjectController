@@ -42,8 +42,14 @@ namespace RecipesFinalProjectServices
 
             return Create(new Category
             {
-                Name = name
+                Name = name,
+                IsApproved = false
             });
+        }
+
+        public static List<Category> RetrievePending()
+        {
+            return CategoryRepo.RetrievePending();
         }
 
         public static Category Update(Category category)
@@ -55,6 +61,11 @@ namespace RecipesFinalProjectServices
                 throw new InvalidOperationException("The category name can't be empty.");
 
             return CategoryRepo.Update(category);
+        }
+
+        public static void Approve(int id)
+        {
+            CategoryRepo.Approve(id);
         }
 
         public static void Delete(int id)

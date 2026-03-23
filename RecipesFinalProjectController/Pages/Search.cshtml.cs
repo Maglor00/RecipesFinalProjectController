@@ -45,7 +45,15 @@ namespace RecipesFinalProjectController.Pages
             if (IsLoggedIn)
             {
                 int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-                FavoriteRecipeIds = FavoritesService.GetUserFavorites(userId).Select(r => r.Id).ToList();
+                FavoriteRecipeIds = FavoritesService
+                    .GetUserFavorites(userId)
+                    .Select(r => r.Id)
+                    .ToList();
+
+                foreach (var recipe in Recipes)
+                {
+                    recipe.IsFavorite = FavoriteRecipeIds.Contains(recipe.Id);
+                }
             }
         }
 

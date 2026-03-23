@@ -12,7 +12,7 @@ namespace RecipesFinalProjectRepo
     {
         public static Category Create(Category category)
         {
-            string sql = $"INSERT INTO Category (name) VALUES ('{category.Name}');";
+            string sql = $"INSERT INTO Category (name) VALUES ('{category.Name}', {(category.IsApproved ? 1 : 0)});";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
@@ -56,12 +56,33 @@ namespace RecipesFinalProjectRepo
 
             return null;
         }
+
+        public static List<Category> RetrievePending()
+        {
+            string sql = $"SELECT * FROM Category WHERE is_approved = 0";
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+            List<Category> categories = new();
+
+            while (dataReader.Read())
+            {
+                categories.Add(Parse(dataReader));
+            }
+
+            return categories;
+        }
+
         public static Category Update(Category categoryToUpdate)
         {
 
             string sql = $"UPDATE Category SET Name = '{categoryToUpdate.Name}' WHERE ID = {categoryToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(categoryToUpdate.Id);
+        }
+
+        public static void Approve(int id)
+        {
+            string sql = $"UPDATE Category SET is_approved = 1 WHERE id = {id}";
+            SQL.ExecuteNonQuery(sql);
         }
 
         public static void Delete(int id)
@@ -75,7 +96,8 @@ namespace RecipesFinalProjectRepo
             return new Category
             {
                 Id = Convert.ToInt32(dataReader["id"]),
-                Name = Convert.ToString(dataReader["name"])
+                Name = Convert.ToString(dataReader["name"]),
+                IsApproved = Convert.ToBoolean(dataReader["is_approved"])
             };
         }
     }

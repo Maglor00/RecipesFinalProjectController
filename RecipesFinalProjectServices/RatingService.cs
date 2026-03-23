@@ -77,6 +77,17 @@ namespace RecipesFinalProjectServices
             return RatingRepo.RetrieveAverageRating(recipeId);
         }
 
+        public static Rating? RetrieveByUserAndRecipe(int userId, int recipeId)
+        {
+            if (userId <= 0 || recipeId <= 0)
+            {
+                return null;
+            }
+                
+
+            return RatingRepo.RetrieveByUserAndRecipe(userId, recipeId);
+        }
+
         public static Rating Update(Rating rating, int recipeId)
         {
 

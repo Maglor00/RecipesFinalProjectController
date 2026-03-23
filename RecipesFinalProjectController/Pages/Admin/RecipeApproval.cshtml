@@ -12,7 +12,10 @@
         @TempData["Message"]
     </div>
 }
-@if (Model.PendingRecipes.Count == null || !Model.PendingRecipes.Any())
+
+<h3 class="mb-3">Pending Recipes</h3>
+
+@if (!Model.PendingRecipes.Any())
 {
     <div class="alert alert-info">
         There are no pending recipes waiting for approval.
@@ -40,30 +43,30 @@ else
                         </div>
                     }
 
-                    <div class="card-body">
-                        <h5 class="card-title">@recipe.Title</h5>
+                <div class="card-body">
+                    <h5 class="card-title">@recipe.Title</h5>
 
-                        <p class="mb-2">
-                            <span class="badge bg-secondary">@recipe.Category?.Name</span>
-                            <span class="badge bg-dark">@recipe.Difficulty?.Name</span>
-                        </p>
+                    <p class="mb-2">
+                        <span class="badge bg-secondary">@recipe.Category?.Name</span>
+                        <span class="badge bg-dark">@recipe.Difficulty?.Name</span>
+                    </p>
 
-                        <p class="text-muted mb-2">
-                            <strong>Time:</strong> @recipe.PreparationTime min
-                        </p>
+                    <p class="text-muted mb-2">
+                        <strong>Time:</strong> @recipe.PreparationTime min
+                    </p>
 
-                        <p class="text-muted mb-2">
-                            <strong>Author:</strong> @recipe.User?.Username
-                        </p>
+                    <p class="text-muted mb-2">
+                        <strong>Author:</strong> @recipe.User?.Username
+                    </p>
 
-                        <p class="card-text">
-                            @(string.IsNullOrWhiteSpace(recipe.PreparationMethod)
-                                ? "No preparation method."
-                                : (recipe.PreparationMethod.Length > 140
-                                    ? recipe.PreparationMethod.Substring(0, 140) + "..."
-                                    : recipe.PreparationMethod))
-                        </p>
-                    </div>
+                    <p class="card-text">
+                        @(string.IsNullOrWhiteSpace(recipe.PreparationMethod)
+                                            ? "No preparation method."
+                                            : (recipe.PreparationMethod.Length > 140
+                                            ? recipe.PreparationMethod.Substring(0, 140) + "..."
+                                            : recipe.PreparationMethod))
+                </p>
+            </div>
 
                     <div class="card-footer bg-white border-0 d-flex gap-2">
                         <form method="post" asp-page-handler="Approve" class="w-50">
@@ -77,6 +80,56 @@ else
                         </form>
                     </div>
                 </div>
+            </div>
+        }
+    </div>
+}
+
+<hr class="my-5" />
+
+<h3 class="mb-3">Pending Categories</h3>
+
+@if (!Model.PendingCategories.Any())
+{
+    <div class="alert alert-info">
+        There are no pending categories.
+    </div>
+}
+else
+{
+    <div class="list-group mb-5">
+        @foreach (var category in Model.PendingCategories)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>@category.Name</span>
+                <form method="post" asp-page-handler="ApproveCategory" class="m-0">
+                    <input type="hidden" name="categoryId" value="@category.Id" />
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
+            </div>
+        }
+    </div>
+}
+
+<h3 class="mb-3">Pending Difficulties</h3>
+
+@if (!Model.PendingDifficulties.Any())
+{
+    <div class="alert alert-info">
+        There are no pending difficulties.
+    </div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var difficulty in Model.PendingDifficulties)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>@difficulty.Name</span>
+                <form method="post" asp-page-handler="ApproveDifficulty" class="m-0">
+                    <input type="hidden" name="difficultyId" value="@difficulty.Id" />
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
             </div>
         }
     </div>
