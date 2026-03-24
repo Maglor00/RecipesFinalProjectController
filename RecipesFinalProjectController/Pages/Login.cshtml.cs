@@ -46,7 +46,8 @@ namespace RecipesFinalProjectController.Pages
                     new Claim(ClaimTypes.Name, user.Username ?? ""),
                     new Claim("FirstName", user.FirstName ?? ""),
                     new Claim("LastName", user.LastName ?? ""),
-                    new Claim("is_admin", user.IsAdmin.ToString())
+                    new Claim("is_admin", user.IsAdmin.ToString()),
+                    new Claim("avatar_url", user.AvatarUrl ?? "")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(

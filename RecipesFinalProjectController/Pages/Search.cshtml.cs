@@ -17,7 +17,7 @@ namespace RecipesFinalProjectController.Pages
 
 
         [BindProperty(SupportsGet = true)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [BindProperty(SupportsGet = true)]
         public int? CategoryId { get; set; }
@@ -45,6 +45,7 @@ namespace RecipesFinalProjectController.Pages
             if (IsLoggedIn)
             {
                 int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
                 FavoriteRecipeIds = FavoritesService
                     .GetUserFavorites(userId)
                     .Select(r => r.Id)
@@ -59,7 +60,7 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnPostToggleFavorite(int recipeId)
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.Identity!.IsAuthenticated)
                 return RedirectToPage("/Login");
 
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

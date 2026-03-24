@@ -10,7 +10,7 @@ namespace RecipesFinalProjectRepo
 {
     internal class SQL
     {
-        const string connectionString = @"Server=localhost\SQLEXPRESS;Database=JD_TP_RC_Recipes;
+        const string connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=JD_TP_RC_Recipes;
                                         Trusted_Connection=True;TrustServerCertificate=True;";
 
         static SqlConnection conn = new SqlConnection(connectionString);

@@ -13,9 +13,13 @@ namespace RecipesFinalProjectRepo
     {
         public static Users Create(Users user)
         {
-            string sql = $"INSERT INTO Users (first_name, last_name, username, password, is_admin) " +
+            string avatarValue = string.IsNullOrWhiteSpace(user.AvatarUrl)
+                ? "NULL"
+                : $"'{user.AvatarUrl}'";
+
+            string sql = $"INSERT INTO Users (first_name, last_name, username, password, is_admin, avatar_url) " +
                          $"VALUES ('{user.FirstName}', '{user.LastName}', '{user.Username}', " +
-                         $"'{user.Password}', '{user.IsAdmin}');";
+                         $"'{user.Password}', '{user.IsAdmin}', {avatarValue});";
 
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
@@ -70,11 +74,16 @@ namespace RecipesFinalProjectRepo
 
         public static Users UpdateProfile(Users userToUpdate)
         {
+            string avatarValue = string.IsNullOrWhiteSpace(userToUpdate.AvatarUrl)
+                ? "NULL"
+                : $"'{userToUpdate.AvatarUrl}'";
+
 
             string sql = $"UPDATE Users SET " +
                          $"first_name = '{userToUpdate.FirstName}', " +
                          $"last_name = '{userToUpdate.LastName}', " +
                          $"username = '{userToUpdate.Username}' " +
+                         $"avatar_url = {avatarValue} " +
                          $"WHERE id = {userToUpdate.Id}";
 
             SQL.ExecuteNonQuery(sql);
@@ -89,13 +98,17 @@ namespace RecipesFinalProjectRepo
 
         public static Users Update(Users userToUpdate)
         {
-           
+            string avatarValue = string.IsNullOrWhiteSpace(userToUpdate.AvatarUrl)
+                ? "NULL"
+                : $"'{userToUpdate.AvatarUrl}'";
+
             string sql = $"UPDATE Users SET " +
                          $"first_name = '{userToUpdate.FirstName}', " +
                          $"last_name = '{userToUpdate.LastName}', " +
                          $"username = '{userToUpdate.Username}', " +
                          $"password = '{userToUpdate.Password}', " +
                          $"is_admin = '{userToUpdate.IsAdmin}' " +
+                         $"avatar_url = {avatarValue} " +
                          $"WHERE id = {userToUpdate.Id}";
 
             SQL.ExecuteNonQuery(sql);
@@ -117,7 +130,10 @@ namespace RecipesFinalProjectRepo
                 LastName = Convert.ToString(dataReader["last_name"]),
                 Username = Convert.ToString(dataReader["username"]),
                 Password = Convert.ToString(dataReader["password"]),
-                IsAdmin = Convert.ToBoolean(dataReader["is_admin"])
+                IsAdmin = Convert.ToBoolean(dataReader["is_admin"]),
+                AvatarUrl = dataReader["avatar_url"] == DBNull.Value
+                    ? ""
+                    : Convert.ToString(dataReader["avatar_url"])
             };
         }
     }

@@ -61,7 +61,7 @@ namespace RecipesFinalProjectServices
             return UsersRepo.RetrieveAll();
         }
 
-        public static Users UpdateProfile(int userId, string firstName, string lastName, string username)
+        public static Users UpdateProfile(int userId, string firstName, string lastName, string username, string? avatarUrl)
         {
             if (userId <= 0)
                 throw new InvalidOperationException("Invalid user.");
@@ -73,6 +73,8 @@ namespace RecipesFinalProjectServices
                 throw new InvalidOperationException("First name, last name and username are required.");
             }
 
+            Users current = UsersRepo.Retrieve(userId);
+
             Users? existing = UsersRepo.RetrieveByUsername(username.Trim());
             if (existing != null && existing.Id != userId)
                 throw new InvalidOperationException("Username already exists.");
@@ -82,7 +84,8 @@ namespace RecipesFinalProjectServices
                 Id = userId,
                 FirstName = firstName.Trim(),
                 LastName = lastName.Trim(),
-                Username = username.Trim()
+                Username = username.Trim(),
+                AvatarUrl = string.IsNullOrWhiteSpace(avatarUrl) ? current.AvatarUrl : avatarUrl
             });
         }
 

@@ -8,64 +8,75 @@
     <link rel="stylesheet" href="~/css/search.css" asp-append-version="true" />
 }
 
-<h2>@ViewData["Title"]</h2>
-
 <div class="search-page">
-    <h2 class="page-title">Find Recipes</h2>
-
-    <form method="get" class="search-panel mb-4 p-3">
-        <div class="row filter-row">
-            <div class="col-md-3">
-                <input asp-for="Title" class="form-control" placeholder="Recipe title" />
-            </div>
-
-            <div class="col-md-3">
-                <select asp-for="CategoryId" class="form-select">
-                    <option value="">All Categories</option>
-                    @foreach (var category in Model.Categories)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <select asp-for="DifficultyId" class="form-select">
-                    <option value="">All Difficulties</option>
-                    @foreach (var difficulty in Model.Difficulties)
-                    {
-                        <option value="@difficulty.Id">@difficulty.Name</option>
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-2">
-                <input asp-for="MaxTime" type="number" class="form-control" placeholder="Max time" />
-            </div>
-
-            <div class="col-md-1">
-                <button class="btn btn-main w-100">Go</button>
-            </div>
+    <div class="search-shell">
+        <div class="search-header">
+            <h1 class="page-title">Find Recipes</h1>
+            <p class="search-subtitle">Search by title, filter by category or difficulty, and find your next meal.</p>
         </div>
-    </form>
 
-    @if (Model.Recipes.Any())
-    {
-        <div class="row recipe-grid">
-            @foreach (var recipe in Model.Recipes)
-            {
-                <div class="col-md-4 mb-4">
-                    <partial name="_RecipeCard" model="recipe" />
+        <form method="get" class="search-panel">
+            <div class="search-main-row">
+                <div class="search-input-wrap">
+                    <span class="search-icon">⌕</span>
+                    <input asp-for="Title"
+                           class="search-input"
+                           placeholder="Search recipes..."
+                           onkeydown="if(event.key === 'Enter'){ this.form.submit(); }" />
                 </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            No recipes found.
-        </div>
-    }
+            </div>
+
+            <div class="filter-row">
+                <div class="filter-pill">
+                    <select asp-for="CategoryId" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-pill">
+                    <select asp-for="DifficultyId" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Difficulties</option>
+                        @foreach (var difficulty in Model.Difficulties)
+                        {
+                            <option value="@difficulty.Id">@difficulty.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-pill time-pill">
+                    <input asp-for="MaxTime"
+                           type="number"
+                           class="filter-time"
+                           placeholder="Max time"
+                           onkeydown="if(event.key === 'Enter'){ this.form.submit(); }" />
+                </div>
+
+                <div class="results-count">
+                    @Model.Recipes.Count results
+                </div>
+            </div>
+        </form>
+
+        @if (Model.Recipes.Any())
+        {
+            <div class="recipe-grid">
+                @foreach (var recipe in Model.Recipes)
+                {
+                    <partial name="_RecipeCard" model="recipe" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state mt-4">
+                No recipes found.
+            </div>
+        }
+    </div>
 </div>
 
 @section Scripts {

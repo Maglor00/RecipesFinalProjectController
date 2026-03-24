@@ -4,27 +4,77 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="top-hero mb-4">
-    <h1>Discover and share amazing recipes</h1>
-    <p>Browse top-rated dishes, save your favorites, and create your own recipes.</p>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/search.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
 
-<h2 class="page-title">🔥 Top Recipes</h2>
+<div class="home-page">
+    <section class="home-hero">
+        <div class="home-hero-overlay">
+            <div class="home-hero-content">
+                <h1 class="home-hero-title">Discover and share amazing recipes</h1>
+                <p class="home-hero-subtitle">
+                    Browse top-rated dishes, save your favorites, and create your own recipes.
+                </p>
 
-@if (Model.TopRecipes != null && Model.TopRecipes.Any())
-{
-    <div class="row">
-        @foreach (var recipe in Model.TopRecipes)
-        {
-            <div class="col-md-4 mb-4">
-                <partial name="_RecipeCard" model="recipe" />
+                <form method="get" asp-page="/Search" class="home-hero-search">
+                    <div class="home-hero-search-box">
+                        <span class="home-hero-search-icon">⌕</span>
+                        <input type="search"
+                               name="title"
+                               class="home-hero-search-input"
+                               placeholder="Search recipes..."
+                               onkeydown="if(event.key === 'Enter'){ this.form.submit(); }" />
+                    </div>
+                </form>
             </div>
-        }
+        </div>
+    </section>
+
+    <div class="home-shell">
+        <section class="home-section">
+            <h2 class="page-title">Popular Categories</h2>
+
+            @if (Model.Categories.Any())
+            {
+                <div class="category-grid">
+                    @foreach (var category in Model.Categories.Take(8))
+                    {
+                        <a asp-page="/Search"
+                           asp-route-categoryId="@category.Id"
+                           class="category-card">
+                            <span class="category-card-title">@category.Name</span>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    No categories available.
+                </div>
+            }
+        </section>
+
+        <section class="home-section">
+            <h2 class="page-title">Top Recipes</h2>
+
+            @if (Model.TopRecipes.Any())
+            {
+                <div class="recipe-grid">
+                    @foreach (var recipe in Model.TopRecipes)
+                    {
+                        <partial name="_RecipeCard" model="recipe" />
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    No top recipes available yet.
+                </div>
+            }
+        </section>
     </div>
-}
-else
-{
-    <div class="empty-state">
-        No top recipes available yet.
-    </div>
-}
+</div>

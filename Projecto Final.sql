@@ -174,5 +174,11 @@ SET image_url = 'https://images.unsplash.com/photo-1604908176997-431a0b4b0c55'
 WHERE title = 'Spaghetti Carbonara';
 
 UPDATE Users
-SET password = '$2a$11$CIn8psO0wZmSnlrTZRK1vOdFRwTtiFfj8jgxzQrC7OB3kiAR1Phh2'
-WHERE username = 'rafacosta';
+SET password = '$2a$11$RJA2GnIm7r/9jWeDn.N/Eu3Upe2XdqwO.ksur3Urt4qs7tghEGHtW'
+WHERE username = 'superchef';
+
+ALTER TABLE Category ADD is_approved bit NOT NULL DEFAULT 1;
+ALTER TABLE Difficulty ADD is_approved bit NOT NULL DEFAULT 1;
+
+ALTER TABLE Users
+ADD avatar_url nvarchar(500) NULL;

@@ -4,22 +4,36 @@
     ViewData["Title"] = "My Favorites";
 }
 
-<h2 class="page-title">My Favorite Recipes</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/favorites.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/search.css" asp-append-version="true" />
+}
 
-@if (Model.Favorites.Any())
-{
-    <div class="row">
-        @foreach (var recipe in Model.Favorites)
+<div class="favorites-page">
+    <div class="favorites-shell">
+        <div class="favorites-header">
+            <h1 class="page-title">My Favorite Recipes</h1>
+            <p class="favorites-subtitle">All the recipes you saved in one place.</p>
+        </div>
+
+        @if (Model.Favorites.Any())
         {
-            <div class="col-md-4 mb-4">
-                <partial name="_RecipeCard" model="recipe" />
+            <div class="results-count mb-3">
+                @Model.Favorites.Count favorites
+            </div>
+
+            <div class="recipe-grid">
+                @foreach (var recipe in Model.Favorites)
+                {
+                    <partial name="_RecipeCard" model="recipe" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                You have no favorite recipes yet.
             </div>
         }
     </div>
-}
-else
-{
-    <div class="empty-state">
-        You have no favorite recipes yet.
-    </div>
-}
+</div>

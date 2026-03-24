@@ -28,7 +28,20 @@
             <div class="form-panel p-4 mb-4">
                 <h4 class="section-title">Personal Information</h4>
 
-                <form method="post" asp-page-handler="UpdateProfile">
+                <div class="mb-4 text-center">
+                    @if (!string.IsNullOrWhiteSpace(Model.CurrentUser.AvatarUrl))
+                    {
+                        <img src="@Model.CurrentUser.AvatarUrl" class="profile-avatar-large" alt="@Model.Username" />
+                    }
+                    else
+                    {
+                        <div class="profile-avatar-large profile-avatar-placeholder">
+                            @(string.IsNullOrWhiteSpace(Model.Username) ? "U" : Model.Username.Substring(0, 1).ToUpper())
+                        </div>
+                    }
+                </div>
+
+                <form method="post" asp-page-handler="UpdateProfile" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label profile-label">First Name</label>
                         <input asp-for="FirstName" class="form-control" />
@@ -42,6 +55,11 @@
                     <div class="mb-3">
                         <label class="form-label profile-label">Username</label>
                         <input asp-for="Username" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label profile-label">Avatar</label>
+                        <input asp-for="AvatarFile" type="file" accept="image/*" class="form-control" />
                     </div>
 
                     <button type="submit" class="btn btn-main">Save Profile</button>

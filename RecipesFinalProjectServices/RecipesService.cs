@@ -285,9 +285,14 @@ namespace RecipesFinalProjectServices
 
         public static List<Recipes> RetrieveTopRecipes(int num)
         {
-            List<Recipes> recipes = RecipesRepo.RetrieveAll();
+            //List<Recipes> recipes = RecipesRepo.RetrieveAll();
             //recipes.OrderBy(x => x.rating;
-            return recipes.Take(num).ToList();
+            //return recipes.Take(num).ToList();
+
+            if (num <= 0)
+                num = 5;
+
+            return RecipesRepo.RetrieveTopRecipes(num);
         }
     }
 }
