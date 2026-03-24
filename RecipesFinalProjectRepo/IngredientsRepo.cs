@@ -21,10 +21,12 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Ingredients WHERE id = {id}";
             SqlDataReader datareader = SQL.ExecuteQuery(sql);
+
             if (datareader.Read())
             {
                 return Parse(datareader);
             }
+
             throw new Exception($"Ingredient with ID: {id} not found");
         }
 
@@ -32,11 +34,13 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Ingredients";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Ingredients> ingredients = new List<Ingredients>();
+            List<Ingredients> ingredients = new();
+
             while (dataReader.Read())
             {
                 ingredients.Add(Parse(dataReader));
             }
+
             return ingredients;
         }
 
@@ -53,23 +57,8 @@ namespace RecipesFinalProjectRepo
             return null;
         }
 
-        public static Ingredients RetrieveOrCreateByName(string name)
-        {
-            var existing = RetrieveByName(name);
-            if (existing != null)
-            {
-                return existing;
-            }
-
-            return Create(new Ingredients
-            {
-                Name = name
-            });
-        }
-
         public static Ingredients Update(Ingredients ingredientsToUpdate)
         {
-            if (ingredientsToUpdate.Id <= 0) throw new Exception($"Ingredient id {ingredientsToUpdate.Id} invalid");
             string sql = $"UPDATE Ingredients SET name = '{ingredientsToUpdate.Name}' " +
                 $"WHERE id = {ingredientsToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
@@ -84,11 +73,11 @@ namespace RecipesFinalProjectRepo
 
         private static Ingredients Parse(SqlDataReader dataReader)
         {
-            Ingredients ingredients = new Ingredients();
-            ingredients.Id = Convert.ToInt32(dataReader["id"]);
-            ingredients.Name = Convert.ToString(dataReader["name"]);
-
-            return ingredients;
+            return new Ingredients
+            {
+                Id = Convert.ToInt32(dataReader["id"]),
+                Name = Convert.ToString(dataReader["name"])
+            };
         }
     }
 }

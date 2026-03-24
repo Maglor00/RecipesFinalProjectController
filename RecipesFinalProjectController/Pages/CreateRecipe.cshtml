@@ -44,7 +44,7 @@
             <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" id="imageInput" />
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" id="imagePreviewContainer" style="display:none;">
             <img id="imagePreview" alt="Preview" />
         </div>
 
@@ -57,7 +57,9 @@
                     <option value="@c.Id">@c.Name</option>
                 }
             </select>
-            <div class="form-text">Or type a new category below.</div>
+            <div class="form-text">
+                Or type a new category below. New categories are pending admin approval.
+            </div>
             <input asp-for="NewCategoryName" class="form-control mt-2" placeholder="New category name" />
         </div>
 
@@ -70,7 +72,9 @@
                     <option value="@d.Id">@d.Name</option>
                 }
             </select>
-            <div class="form-text">Or type a new difficulty below.</div>
+            <div class="form-text">
+                Or type a new difficulty below. New difficulties are pending admin approval.
+            </div>
             <input asp-for="NewDifficultyName" class="form-control mt-2" placeholder="New difficulty name" />
         </div>
 
@@ -98,10 +102,12 @@
                         </select>
                     </td>
                     <td>
-                        <input name="NewIngredientNames" class="form-control" placeholder="Or type new ingredient" />
+                        <input name="NewIngredientNames"
+                               class="form-control"
+                               placeholder="Or type new ingredient" />
                     </td>
                     <td>
-                        <input name="Quantities" type="number" step="0.01" class="form-control" />
+                        <input name="Quantities" type="number" step="0.01" min="0.01" class="form-control" />
                     </td>
                     <td>
                         <input name="Measures" class="form-control" placeholder="g / ml / pcs" />
@@ -112,6 +118,11 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="form-text mb-3">
+            If you type a new ingredient, the ingredient dropdown in that row will be disabled.
+            If you select an ingredient from the dropdown, the new ingredient input will be disabled.
+        </div>
 
         <button type="button" class="btn btn-outline-secondary mb-3" onclick="addIngredientRow()">
             Add Ingredient

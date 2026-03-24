@@ -45,6 +45,21 @@ namespace RecipesFinalProjectServices
 
         public static IngredientLine Update(IngredientLine ingredientLine)
         {
+            if (ingredientLine == null || ingredientLine.Id <= 0)
+                throw new InvalidOperationException("Invalid ingredient line.");
+
+            if (ingredientLine.Ingredient == null || ingredientLine.Ingredient.Id <= 0)
+                throw new InvalidOperationException("Please select a valid ingredient.");
+
+            if (ingredientLine.Recipe == null || ingredientLine.Recipe.Id <= 0)
+                throw new InvalidOperationException("Please select a valid recipe.");
+
+            if (ingredientLine.Quantity <= 0)
+                throw new InvalidOperationException("Quantity must be greater than zero.");
+
+            if (string.IsNullOrWhiteSpace(ingredientLine.Measure))
+                throw new InvalidOperationException("Measure is required.");
+
             return IngredientLineRepo.Update(ingredientLine);
         }
 

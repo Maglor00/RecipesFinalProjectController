@@ -11,29 +11,50 @@ namespace RecipesFinalProjectServices
     public static class RatingService 
     {
 
-        public static Rating Create(Rating rating)
+        public static Rating Create(Rating rating, int recipeId)
         {
             if (rating == null)
-                throw new InvalidOperationException("Rating is required");
+                throw new InvalidOperationException("Rating is required.");
+
+            if (recipeId <= 0)
+                throw new InvalidOperationException("A valid recipe is required.");
 
             if (rating.Score < 1 || rating.Score > 5)
-                throw new InvalidOperationException("Please enter a score between 1 and 5");
+                throw new InvalidOperationException("Please enter a score between 1 and 5.");
 
             if (rating.User == null || rating.User.Id <= 0)
-                throw new InvalidOperationException("A valid user is required");
+                throw new InvalidOperationException("A valid user is required.");
 
-            if (rating.Recipe == null || rating.Recipe.Id <= 0)
-                throw new InvalidOperationException("A valid recipe is required");
-
-            return RatingRepo.Create(rating);
+            return RatingRepo.Create(rating, recipeId);
         }
 
         public static Rating AddRating(int userId, int recipeId, int score)
         {
-            if (score < 1 || score > 5)
-                throw new InvalidOperationException("Please enter a score between 1 and 5");
+            if (userId <= 0)
+                throw new InvalidOperationException("Invalid user.");
 
-            return RatingRepo.AddOrUpdateRating(userId, recipeId, score);
+            if (recipeId <= 0)
+                throw new InvalidOperationException("Invalid recipe.");
+
+            if (score < 1 || score > 5)
+                throw new InvalidOperationException("Please enter a score between 1 and 5.");
+
+            var existing = RatingRepo.RetrieveByUserAndRecipe(userId, recipeId);
+
+            if (existing != null)
+            {
+                existing.Score = score;
+                return RatingRepo.Update(existing, recipeId);
+            }
+
+            return Create(new Rating
+            {
+                Score = score,
+                User = new Users 
+                { 
+                    Id = userId 
+                }
+            }, recipeId);
         }
 
         public static Rating Retrieve(int id)
@@ -48,22 +69,41 @@ namespace RecipesFinalProjectServices
 
         public static double RetrieveAverageRating(int recipeId)
         {
+            if(recipeId <= 0)
+            {
+                throw new InvalidOperationException("Invalid recipe.");
+            }
+                
             return RatingRepo.RetrieveAverageRating(recipeId);
         }
 
-        public static Rating Update(Rating rating)
+        public static Rating? RetrieveByUserAndRecipe(int userId, int recipeId)
+        {
+            if (userId <= 0 || recipeId <= 0)
+            {
+                return null;
+            }
+                
+
+            return RatingRepo.RetrieveByUserAndRecipe(userId, recipeId);
+        }
+
+        public static Rating Update(Rating rating, int recipeId)
         {
 
-            if (rating == null)
-                throw new InvalidOperationException("Rating is required");
+            if (rating == null || rating.Id <= 0)
+                throw new InvalidOperationException("Invalid rating.");
 
-            if (rating.Id <= 0)
-                throw new InvalidOperationException("A valid rating id is required");
+            if (recipeId <= 0)
+                throw new InvalidOperationException("A valid recipe is required.");
 
             if (rating.Score < 1 || rating.Score > 5)
-                throw new InvalidOperationException("Please enter a score between 1 and 5");
+                throw new InvalidOperationException("Please enter a score between 1 and 5.");
 
-            return RatingRepo.Update(rating);
+            if (rating.User == null || rating.User.Id <= 0)
+                throw new InvalidOperationException("A valid user is required.");
+
+            return RatingRepo.Update(rating, recipeId);
         }
 
         public static void Delete(int id)

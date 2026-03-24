@@ -11,15 +11,14 @@ namespace RecipesFinalProjectController.Pages
         public List<Recipes> Recipes { get; set; } = new();
 
         [TempData]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
 
         public IActionResult OnGet()
         {
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             Recipes = RecipesService.RetrieveByUserId(userId);
 
             return Page();
@@ -30,10 +29,9 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            Recipes recipe = RecipesService.RetrieveByIdForUser(recipeId, userId);
-            RecipesService.Delete(recipe.Id);
+            RecipesService.DeleteForUser(recipeId, userId);
 
             Message = "Recipe deleted successfully.";
             return RedirectToPage();

@@ -1,6 +1,5 @@
 ﻿@model RecipesFinalProjectModels.Recipes
 
-
 <div class="card recipe-card h-100">
     <a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
         @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
@@ -16,28 +15,37 @@
     </a>
 
     <div class="card-body">
-        <a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
-            <h5 class="card-title">@Model.Title</h5>
-        </a>
+        <div class="d-flex justify-content-between align-items-start">
+            <a asp-page="/RecipeDetails" asp-route-id="@Model.Id" class="recipe-card-link">
+                <h5 class="card-title">@Model.Title</h5>
+            </a>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <form method="post" asp-page="/Search" asp-page-handler="ToggleFavorite">
+                    <input type="hidden" name="recipeId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-link p-0 border-0 text-decoration-none">
+                        @if (Model.IsFavorite)
+                        {
+                            <span style="font-size:22px;color:red;">❤️</span>
+                        }
+                        else
+                        {
+                            <span style="font-size:22px;">🤍</span>
+                        }
+                    </button>
+                </form>
+            }
+        </div>
 
         <div class="mb-2">
             <span class="badge-soft">@Model.Category?.Name</span>
             <span class="badge-soft">@Model.Difficulty?.Name</span>
         </div>
 
-        <p class="recipe-meta mb-2">
+        <p class="recipe-meta mb-0">
             Time: @Model.PreparationTime min
         </p>
-
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
-        {
-            <form method="post" asp-page="/Search" asp-page-handler="ToggleFavorite" class="mt-2">
-                <input type="hidden" name="recipeId" value="@Model.Id" />
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                    ❤ Favorite
-                </button>
-            </form>
-        }
     </div>
 </div>
 

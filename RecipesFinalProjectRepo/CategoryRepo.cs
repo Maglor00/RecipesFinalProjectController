@@ -12,7 +12,7 @@ namespace RecipesFinalProjectRepo
     {
         public static Category Create(Category category)
         {
-            string sql = $"INSERT INTO Category (name) VALUES ('{category.Name}');";
+            string sql = $"INSERT INTO Category (name) VALUES ('{category.Name}', {(category.IsApproved ? 1 : 0)});";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
@@ -21,10 +21,12 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Category WHERE id = {id};";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+
             if (dataReader.Read())
             {
                 return Parse(dataReader);
             }
+
             throw new Exception($"Category with ID: {id} not found");
         }
 
@@ -32,11 +34,13 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Category;";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Category> categories = new List<Category>();
+            List<Category> categories = new();
+
             while (dataReader.Read())
             {
                 categories.Add(Parse(dataReader));
             }
+
             return categories;
         }
 
@@ -53,26 +57,32 @@ namespace RecipesFinalProjectRepo
             return null;
         }
 
-        public static Category RetrieveOrCreateByName(string name)
+        public static List<Category> RetrievePending()
         {
-            var existing = RetrieveByName(name);
-            if (existing != null)
+            string sql = $"SELECT * FROM Category WHERE is_approved = 0";
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+            List<Category> categories = new();
+
+            while (dataReader.Read())
             {
-                return existing;
+                categories.Add(Parse(dataReader));
             }
-                
-            return Create(new Category
-            {
-                Name = name
-            }); 
+
+            return categories;
         }
 
         public static Category Update(Category categoryToUpdate)
         {
-            if (categoryToUpdate.Id <= 0) throw new Exception($"Category id {categoryToUpdate.Id} invalid");
+
             string sql = $"UPDATE Category SET Name = '{categoryToUpdate.Name}' WHERE ID = {categoryToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(categoryToUpdate.Id);
+        }
+
+        public static void Approve(int id)
+        {
+            string sql = $"UPDATE Category SET is_approved = 1 WHERE id = {id}";
+            SQL.ExecuteNonQuery(sql);
         }
 
         public static void Delete(int id)
@@ -83,11 +93,12 @@ namespace RecipesFinalProjectRepo
 
         private static Category Parse(SqlDataReader dataReader)
         {
-            Category category = new Category();
-            category.Id = Convert.ToInt32(dataReader["id"]);
-            category.Name = Convert.ToString(dataReader["name"]);
-
-            return category;
+            return new Category
+            {
+                Id = Convert.ToInt32(dataReader["id"]),
+                Name = Convert.ToString(dataReader["name"]),
+                IsApproved = Convert.ToBoolean(dataReader["is_approved"])
+            };
         }
     }
 }

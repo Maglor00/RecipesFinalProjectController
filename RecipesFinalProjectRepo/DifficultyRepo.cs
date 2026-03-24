@@ -14,7 +14,7 @@ namespace RecipesFinalProjectRepo
     {
         public static Difficulty Create(Difficulty difficulty)
         {
-            string sql = $"INSERT INTO Difficulty (name) VALUES ('{difficulty.Name}');";
+            string sql = $"INSERT INTO Difficulty (name) VALUES ('{difficulty.Name}', {(difficulty.IsApproved ? 1 : 0)});";
             int id = SQL.ExecuteNonQuery(sql);
             return Retrieve(id);
         }
@@ -34,11 +34,13 @@ namespace RecipesFinalProjectRepo
         {
             string sql = $"SELECT * FROM Difficulty";
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-            List<Difficulty> difficulties = new List<Difficulty>();
+            List<Difficulty> difficulties = new();
+
             while (dataReader.Read())
             {
                 difficulties.Add(Parse(dataReader));
             }
+
             return difficulties;
         }
 
@@ -55,15 +57,35 @@ namespace RecipesFinalProjectRepo
             return null;
         }
 
+        public static List<Difficulty> RetrievePending()
+        {
+            string sql = $"SELECT * FROM Difficulty WHERE is_approved = 0";
+            SqlDataReader dataReader = SQL.ExecuteQuery(sql);
+            List<Difficulty> difficulties = new();
+
+            while (dataReader.Read())
+            {
+                difficulties.Add(Parse(dataReader));
+            }
+
+            return difficulties;
+        }
 
         public static Difficulty Update(Difficulty difficultyToUpdate)
         {
-            if (difficultyToUpdate.Id <= 0) throw new Exception($"User id {difficultyToUpdate.Id} invalid");
+
             string sql = $"UPDATE Difficulty SET name = '{difficultyToUpdate.Name}' " +
                 $"WHERE id = {difficultyToUpdate.Id}";
             SQL.ExecuteNonQuery(sql);
             return Retrieve(difficultyToUpdate.Id);
         }
+
+        public static void Approve(int id)
+        {
+            string sql = $"UPDATE Difficulty SET is_approved = 1 WHERE id = {id}";
+            SQL.ExecuteNonQuery(sql);
+        }
+        
 
         public static void Delete(int id)
         {
@@ -71,13 +93,14 @@ namespace RecipesFinalProjectRepo
             SQL.ExecuteNonQuery(sql);
         }
 
-        private static Difficulty Parse(SqlDataReader datareader)
+        private static Difficulty Parse(SqlDataReader dataReader)
         {
-            Difficulty difficulty = new Difficulty();
-            difficulty.Id = Convert.ToInt32(datareader["id"]);
-            difficulty.Name = Convert.ToString(datareader["name"]);
-
-            return difficulty;
+            return new Difficulty
+            {
+                Id = Convert.ToInt32(dataReader["id"]),
+                Name = Convert.ToString(dataReader["name"]),
+                IsApproved = Convert.ToBoolean(dataReader["is_approved"])
+            }; 
         }
     }
 }

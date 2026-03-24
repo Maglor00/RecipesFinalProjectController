@@ -12,8 +12,6 @@ namespace RecipesFinalProjectRepo
     {
         public static void AddFavorite(int userId, int recipeId)
         {
-            if (IsFavorite(userId, recipeId))
-                return;
 
             string sql = $"INSERT INTO Favorites (user_id, recipe_id) " +
                 $"VALUES ({userId}, {recipeId})";
@@ -43,8 +41,7 @@ namespace RecipesFinalProjectRepo
                  "ORDER BY Recipes.id DESC";
 
             SqlDataReader dataReader = SQL.ExecuteQuery(sql);
-
-            List<Recipes> recipes = new List<Recipes>();
+            List<Recipes> recipes = new();
 
             while (dataReader.Read())
             {
@@ -82,6 +79,11 @@ namespace RecipesFinalProjectRepo
                 {
                     Id = Convert.ToInt32(dataReader["difficulty_id"]),
                     Name = Convert.ToString(dataReader["difficulty_name"])
+                },
+                User = new Users
+                {
+                    Id = Convert.ToInt32(dataReader["user_id"]),
+                    Username = Convert.ToString(dataReader["username"])
                 }
             };
         }

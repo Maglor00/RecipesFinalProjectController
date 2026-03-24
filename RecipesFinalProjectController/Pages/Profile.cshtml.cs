@@ -10,24 +10,24 @@ namespace RecipesFinalProjectController.Pages
     public class ProfileModel : PageModel
     {
         [BindProperty]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [BindProperty]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [BindProperty]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         [BindProperty]
-        public string CurrentPassword { get; set; }
+        public string CurrentPassword { get; set; } = string.Empty;
 
         [BindProperty]
-        public string NewPassword { get; set; }
+        public string NewPassword { get; set; } = string.Empty;
 
-        public Users CurrentUser { get; set; }
+        public Users CurrentUser { get; set; } = new();
 
         [TempData]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
 
 
         public IActionResult OnGet()
@@ -35,10 +35,9 @@ namespace RecipesFinalProjectController.Pages
             if (!User.Identity.IsAuthenticated)
                 return RedirectToPage("/Login");
 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
             CurrentUser = UsersService.Retrieve(userId);
-
             FirstName = CurrentUser.FirstName;
             LastName = CurrentUser.LastName;
             Username = CurrentUser.Username;
@@ -48,22 +47,14 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnPostUpdateProfile()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.Identity!.IsAuthenticated)
                 return RedirectToPage("/Login");
 
             try
             {
-                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-                Users updatedUser = new Users
-                {
-                    Id = userId,
-                    FirstName = FirstName,
-                    LastName = LastName,
-                    Username = Username
-                };
-
-                UsersService.UpdateProfile(updatedUser);
+                UsersService.UpdateProfile(userId, FirstName, LastName, Username);
 
                 Message = "Profile updated successfully.";
                 return RedirectToPage();
@@ -77,12 +68,12 @@ namespace RecipesFinalProjectController.Pages
 
         public IActionResult OnPostChangePassword()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.Identity!.IsAuthenticated)
                 return RedirectToPage("/Login");
 
             try
             {
-                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
                 UsersService.ChangePassword(userId, CurrentPassword, NewPassword);
 
