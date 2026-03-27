@@ -75,6 +75,7 @@ namespace RecipesFinalProjectController.Pages
             try
             {
                 int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
                 string imageUrl = await SaveImageAsync();
 
                 RecipesService.UpdateRecipeWithIngredients(
