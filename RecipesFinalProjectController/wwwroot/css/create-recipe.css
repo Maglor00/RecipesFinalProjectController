@@ -1,16 +1,109 @@
-﻿.create-recipe-page #imagePreview {
-    max-width: 320px;
-    max-height: 220px;
-    object-fit: cover;
+﻿.create-recipe-page {
+    background: #f5f5f2;
+    min-height: 100vh;
+    padding: 28px 0 48px;
+}
+
+.create-recipe-shell {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 12px;
+}
+
+.create-recipe-header {
+    margin-bottom: 22px;
+}
+
+.create-recipe-subtitle {
+    margin-top: -4px;
+    color: #6b7280;
+    font-size: 0.98rem;
+}
+
+.create-recipe-card {
+    background: #ffffff;
+    border: 1px solid #e8ebe4;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.create-recipe-card-body {
+    padding: 26px;
+}
+
+.form-section {
+    margin-bottom: 28px;
+}
+
+.create-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.create-input {
     border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
+    min-height: 48px;
+}
+
+textarea.create-input {
+    min-height: 160px;
+}
+
+.image-preview-box {
+    width: 100%;
+    border: 1px dashed #d1d5db;
+    border-radius: 16px;
+    background: #fafaf9;
+    padding: 12px;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#imagePreview {
+    max-width: 100%;
+    max-height: 320px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 14px;
     display: block;
 }
 
-.create-recipe-page .ingredients-table th,
-.create-recipe-page .ingredients-table td {
+.ingredients-section {
+    padding-top: 8px;
+    border-top: 1px solid #eef0f3;
+}
+
+.ingredients-table-wrap {
+    overflow-x: auto;
+}
+
+.ingredients-table thead th {
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+    font-weight: 700;
+    background: #fafaf9;
+}
+
+.ingredients-table td,
+.ingredients-table th {
     vertical-align: middle;
+    border-color: #eef0f3;
+}
+
+.create-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.create-submit-btn {
+    min-width: 190px;
+    height: 48px;
+    font-weight: 700;
+    border-radius: 12px;
 }
 
 .form-control:disabled,
@@ -22,14 +115,16 @@
     border-color: #d1d5db;
 }
 
-#imagePreviewContainer {
-    display: none;
-}
+@media (max-width: 768px) {
+    .create-recipe-card-body {
+        padding: 18px;
+    }
 
-#imagePreview {
-    max-width: 320px;
-    width: 100%;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    .create-actions {
+        justify-content: stretch;
+    }
+
+    .create-submit-btn {
+        width: 100%;
+    }
 }

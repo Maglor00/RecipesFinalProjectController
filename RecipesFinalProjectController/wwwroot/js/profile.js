@@ -5,9 +5,7 @@
     if (!toggleBtn || !container) return;
 
     toggleBtn.addEventListener("click", function () {
-        const isHidden = container.style.display === "none" || container.style.display === "";
-
-        if (isHidden) {
+        if (container.style.display === "none" || container.style.display === "") {
             container.style.display = "block";
             toggleBtn.textContent = "Hide Change Password";
         } else {

@@ -9,86 +9,104 @@
 }
 
 <div class="profile-page">
-    <h2 class="page-title">My Profile</h2>
-
-    @if (!string.IsNullOrWhiteSpace(Model.Message))
-    {
-        <div class="alert alert-success" data-auto-hide="true">
-            @Model.Message
+    <div class="profile-shell">
+        <div class="profile-header">
+            <h1 class="page-title">My Profile</h1>
+            <p class="profile-subtitle">Manage your personal information, avatar, and security settings.</p>
         </div>
-    }
 
-    @if (!ViewContext.ModelState.IsValid)
-    {
-        <div asp-validation-summary="All" class="alert alert-danger"></div>
-    }
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-panel p-4 mb-4">
-                <h4 class="section-title">Personal Information</h4>
-
-                <div class="mb-4 text-center">
-                    @if (!string.IsNullOrWhiteSpace(Model.CurrentUser.AvatarUrl))
-                    {
-                        <img src="@Model.CurrentUser.AvatarUrl" class="profile-avatar-large" alt="@Model.Username" />
-                    }
-                    else
-                    {
-                        <div class="profile-avatar-large profile-avatar-placeholder">
-                            @(string.IsNullOrWhiteSpace(Model.Username) ? "U" : Model.Username.Substring(0, 1).ToUpper())
-                        </div>
-                    }
-                </div>
-
-                <form method="post" asp-page-handler="UpdateProfile" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label profile-label">First Name</label>
-                        <input asp-for="FirstName" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label profile-label">Last Name</label>
-                        <input asp-for="LastName" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label profile-label">Username</label>
-                        <input asp-for="Username" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label profile-label">Avatar</label>
-                        <input asp-for="AvatarFile" type="file" accept="image/*" class="form-control" />
-                    </div>
-
-                    <button type="submit" class="btn btn-main">Save Profile</button>
-                </form>
+        @if (!string.IsNullOrWhiteSpace(Model.Message))
+        {
+            <div class="alert alert-success" data-auto-hide="true">
+                @Model.Message
             </div>
-        </div>
+        }
 
-        <div class="col-md-6">
-            <div class="form-panel p-4 security-box">
-                <h4 class="section-title">Security</h4>
+        @if (!ViewContext.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
 
-                <button type="button" class="btn btn-outline-secondary" id="togglePasswordFormBtn">
-                    Change Password
-                </button>
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h4 class="section-title mb-0">Personal Information</h4>
+                    </div>
 
-                <div id="changePasswordContainer" class="mt-3">
-                    <form method="post" asp-page-handler="ChangePassword">
-                        <div class="mb-3">
-                            <label class="form-label profile-label">Current Password</label>
-                            <input asp-for="CurrentPassword" type="password" class="form-control" />
+                    <div class="profile-card-body">
+                        <div class="profile-avatar-section">
+                            @if (!string.IsNullOrWhiteSpace(Model.CurrentUser.AvatarUrl))
+                            {
+                                <img src="@Model.CurrentUser.AvatarUrl" class="profile-avatar-large" alt="@Model.Username" />
+                            }
+                            else
+                            {
+                                <div class="profile-avatar-large profile-avatar-placeholder">
+                                    @(string.IsNullOrWhiteSpace(Model.Username) ? "U" : Model.Username.Substring(0, 1).ToUpper())
+                                </div>
+                            }
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label profile-label">New Password</label>
-                            <input asp-for="NewPassword" type="password" class="form-control" />
-                        </div>
+                        <form method="post" asp-page-handler="UpdateProfile" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label profile-label">First Name</label>
+                                    <input asp-for="FirstName" class="form-control profile-input" />
+                                </div>
 
-                        <button type="submit" class="btn btn-main">Save New Password</button>
-                    </form>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label profile-label">Last Name</label>
+                                    <input asp-for="LastName" class="form-control profile-input" />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label profile-label">Username</label>
+                                <input asp-for="Username" class="form-control profile-input" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label profile-label">Avatar</label>
+                                <input asp-for="AvatarFile" type="file" accept="image/*" class="form-control profile-input" />
+                                <div class="form-text mt-2">Upload a new avatar to replace the current one.</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-main profile-save-btn">Save Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h4 class="section-title mb-0">Security</h4>
+                    </div>
+
+                    <div class="profile-card-body">
+                        <p class="profile-security-text">Keep your account safe by updating your password whenever needed.</p>
+
+                        <button type="button" class="btn btn-outline-secondary profile-toggle-btn" id="togglePasswordFormBtn">
+                            Change Password
+                        </button>
+
+                        <div id="changePasswordContainer" class="mt-4">
+                            <form method="post" asp-page-handler="ChangePassword">
+                                <div class="mb-3">
+                                    <label class="form-label profile-label">Current Password</label>
+                                    <input asp-for="CurrentPassword" type="password" class="form-control profile-input" />
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label profile-label">New Password</label>
+                                    <input asp-for="NewPassword" type="password" class="form-control profile-input" />
+                                </div>
+
+                                <button type="submit" class="btn btn-main profile-save-btn">Save New Password</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

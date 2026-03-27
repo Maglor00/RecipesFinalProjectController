@@ -1,138 +1,159 @@
 ﻿@page
 @model RecipesFinalProjectController.Pages.Admin.RecipeApprovalModel
 @{
-    ViewData["Title"] = "Recipe Approval";
+    ViewData["Title"] = "Admin Panel";
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
-
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Message"]
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-panel.css" asp-append-version="true" />
 }
 
-<h3 class="mb-3">Pending Recipes</h3>
+<div class="admin-page">
+    <div class="admin-shell">
+        <div class="admin-header">
+            <h1 class="page-title">Admin Panel</h1>
+            <p class="admin-subtitle">
+                Review and approve recipes, categories, and difficulties submitted by users.
+            </p>
+        </div>
 
-@if (!Model.PendingRecipes.Any())
-{
-    <div class="alert alert-info">
-        There are no pending recipes waiting for approval.
-    </div>
-}
-else
-{
-    <div class="row">
-        @foreach (var recipe in Model.PendingRecipes)
+        @if (TempData["Message"] != null)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    @if (!string.IsNullOrWhiteSpace(recipe.ImageUrl))
+            <div class="alert alert-success">
+                @TempData["Message"]
+            </div>
+        }
+
+        <section class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">Pending Recipes</h2>
+                <span class="admin-count">@Model.PendingRecipes.Count</span>
+            </div>
+
+            @if (!Model.PendingRecipes.Any())
+            {
+                <div class="empty-state">
+                    There are no pending recipes waiting for approval.
+                </div>
+            }
+            else
+            {
+                <div class="admin-recipes-grid">
+                    @foreach (var recipe in Model.PendingRecipes)
                     {
-                        <img src="@recipe.ImageUrl"
-                             class="card-img-top"
-                             alt="@recipe.Title"
-                             style="height:220px; object-fit:cover;" />
-                    }
-                    else
+                        <div class="admin-recipe-card">
+                            @if (!string.IsNullOrWhiteSpace(recipe.ImageUrl))
+                            {
+                                <img src="@recipe.ImageUrl"
+                                     class="admin-recipe-image"
+                                     alt="@recipe.Title" />
+                            }
+                            else
+                            {
+                                <div class="admin-recipe-image admin-recipe-placeholder">
+                                    <span>No image</span>
+                                </div>
+                            }
+
+                        <div class="admin-recipe-body">
+                            <h3 class="admin-recipe-title">@recipe.Title</h3>
+
+                            <div class="admin-recipe-meta">
+                                <span class="detail-chip">@recipe.Category?.Name</span>
+                                <span class="detail-chip">@recipe.Difficulty?.Name</span>
+                                <span class="detail-chip">@recipe.PreparationTime min</span>
+                            </div>
+
+                            <p class="admin-recipe-author">
+                                <strong>Author:</strong> @recipe.User?.Username
+                            </p>
+
+                            <p class="admin-recipe-text">
+                                @(string.IsNullOrWhiteSpace(recipe.PreparationMethod)
+                                                            ? "No preparation method."
+                                                            : (recipe.PreparationMethod.Length > 140
+                                                            ? recipe.PreparationMethod.Substring(0, 140) + "..."
+                                                            : recipe.PreparationMethod))
+                        </p>
+
+                                <div class="admin-actions">
+                                    <form method="post" asp-page-handler="Approve" class="admin-action-form">
+                                        <input type="hidden" name="recipeId" value="@recipe.Id" />
+                                        <button type="submit" class="btn btn-success admin-btn">Approve</button>
+                                    </form>
+
+                                    <form method="post" asp-page-handler="Delete" class="admin-action-form">
+                                        <input type="hidden" name="recipeId" value="@recipe.Id" />
+                                        <button type="submit" class="btn btn-outline-danger admin-btn">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                                }
+                </div>
+            }
+        </section>
+
+        <section class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">Pending Categories</h2>
+                <span class="admin-count">@Model.PendingCategories.Count</span>
+            </div>
+
+            @if (!Model.PendingCategories.Any())
+            {
+                <div class="empty-state">
+                    There are no pending categories.
+                </div>
+            }
+            else
+            {
+                <div class="admin-list-card">
+                    @foreach (var category in Model.PendingCategories)
                     {
-                        <div class="d-flex align-items-center justify-content-center bg-light"
-                             style="height:220px;">
-                            <span class="text-muted">No image</span>
+                        <div class="admin-list-row">
+                            <span class="admin-list-name">@category.Name</span>
+
+                            <form method="post" asp-page-handler="ApproveCategory" class="m-0">
+                                <input type="hidden" name="categoryId" value="@category.Id" />
+                                <button type="submit" class="btn btn-success admin-small-btn">Approve</button>
+                            </form>
                         </div>
                     }
-
-                <div class="card-body">
-                    <h5 class="card-title">@recipe.Title</h5>
-
-                    <p class="mb-2">
-                        <span class="badge bg-secondary">@recipe.Category?.Name</span>
-                        <span class="badge bg-dark">@recipe.Difficulty?.Name</span>
-                    </p>
-
-                    <p class="text-muted mb-2">
-                        <strong>Time:</strong> @recipe.PreparationTime min
-                    </p>
-
-                    <p class="text-muted mb-2">
-                        <strong>Author:</strong> @recipe.User?.Username
-                    </p>
-
-                    <p class="card-text">
-                        @(string.IsNullOrWhiteSpace(recipe.PreparationMethod)
-                                            ? "No preparation method."
-                                            : (recipe.PreparationMethod.Length > 140
-                                            ? recipe.PreparationMethod.Substring(0, 140) + "..."
-                                            : recipe.PreparationMethod))
-                </p>
-            </div>
-
-                    <div class="card-footer bg-white border-0 d-flex gap-2">
-                        <form method="post" asp-page-handler="Approve" class="w-50">
-                            <input type="hidden" name="recipeId" value="@recipe.Id" />
-                            <button type="submit" class="btn btn-success w-100">Approve</button>
-                        </form>
-
-                        <form method="post" asp-page-handler="Delete" class="w-50">
-                            <input type="hidden" name="recipeId" value="@recipe.Id" />
-                            <button type="submit" class="btn btn-outline-danger w-100">Delete</button>
-                        </form>
-                    </div>
                 </div>
+            }
+        </section>
+
+        <section class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">Pending Difficulties</h2>
+                <span class="admin-count">@Model.PendingDifficulties.Count</span>
             </div>
-        }
-    </div>
-}
 
-<hr class="my-5" />
+            @if (!Model.PendingDifficulties.Any())
+            {
+                <div class="empty-state">
+                    There are no pending difficulties.
+                </div>
+            }
+            else
+            {
+                <div class="admin-list-card">
+                    @foreach (var difficulty in Model.PendingDifficulties)
+                    {
+                        <div class="admin-list-row">
+                            <span class="admin-list-name">@difficulty.Name</span>
 
-<h3 class="mb-3">Pending Categories</h3>
-
-@if (!Model.PendingCategories.Any())
-{
-    <div class="alert alert-info">
-        There are no pending categories.
+                            <form method="post" asp-page-handler="ApproveDifficulty" class="m-0">
+                                <input type="hidden" name="difficultyId" value="@difficulty.Id" />
+                                <button type="submit" class="btn btn-success admin-small-btn">Approve</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
     </div>
-}
-else
-{
-    <div class="list-group mb-5">
-        @foreach (var category in Model.PendingCategories)
-        {
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <span>@category.Name</span>
-                <form method="post" asp-page-handler="ApproveCategory" class="m-0">
-                    <input type="hidden" name="categoryId" value="@category.Id" />
-                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                </form>
-            </div>
-        }
-    </div>
-}
-
-<h3 class="mb-3">Pending Difficulties</h3>
-
-@if (!Model.PendingDifficulties.Any())
-{
-    <div class="alert alert-info">
-        There are no pending difficulties.
-    </div>
-}
-else
-{
-    <div class="list-group">
-        @foreach (var difficulty in Model.PendingDifficulties)
-        {
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <span>@difficulty.Name</span>
-                <form method="post" asp-page-handler="ApproveDifficulty" class="m-0">
-                    <input type="hidden" name="difficultyId" value="@difficulty.Id" />
-                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                </form>
-            </div>
-        }
-    </div>
-}
+</div>
 
 

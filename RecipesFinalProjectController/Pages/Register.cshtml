@@ -4,38 +4,55 @@
     ViewData["Title"] = "Register";
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
-
-@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
-{
-    <div class="alert alert-danger">
-        @Model.ErrorMessage
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/register.css" asp-append-version="true" />
 }
 
-<form method="post">
-    <div class="mb-3">
-        <label class="form-label">First Name</label>
-        <input asp-for="FirstName" class="form-control" />
-    </div>
+<div class="auth-page">
+    <div class="auth-card auth-card-wide">
+        <div class="auth-header">
+            <h1 class="auth-title">Create your account</h1>
+            <p class="auth-subtitle">Join RecipeHub to save favorites, rate recipes, and share your own dishes.</p>
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Last Name</label>
-        <input asp-for="LastName" class="form-control" />
-    </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger mb-3">
+                @Model.ErrorMessage
+            </div>
+        }
 
-    <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input asp-for="Username" class="form-control" />
-    </div>
+        <form method="post" class="auth-form">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label auth-label">First Name</label>
+                    <input asp-for="FirstName" class="form-control auth-input" />
+                </div>
 
-    <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input asp-for="Password" type="password" class="form-control" />
-    </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label auth-label">Last Name</label>
+                    <input asp-for="LastName" class="form-control auth-input" />
+                </div>
+            </div>
 
-    <button type="submit" class="btn btn-primary">
-        Register
-    </button>
-</form>
+            <div class="mb-3">
+                <label class="form-label auth-label">Username</label>
+                <input asp-for="Username" class="form-control auth-input" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label auth-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control auth-input" />
+            </div>
+
+            <button type="submit" class="btn btn-main auth-submit">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Already have an account?</span>
+            <a asp-page="/Login">Login</a>
+        </div>
+    </div>
+</div>
 

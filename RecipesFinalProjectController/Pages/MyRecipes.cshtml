@@ -4,77 +4,100 @@
     ViewData["Title"] = "My Recipes";
 }
 
-<h2 class="page-title">My Recipes</h2>
-
-@if (!string.IsNullOrWhiteSpace(Model.Message))
-{
-    <div class="alert alert-success" data-auto-hide="true">
-        @Model.Message
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/my-recipes.css" asp-append-version="true" />
 }
 
-@if (Model.Recipes.Any())
-{
-    <div class="row">
-        @foreach (var recipe in Model.Recipes)
+<div class="my-recipes-page">
+    <div class="my-recipes-shell">
+        <div class="my-recipes-header">
+            <h1 class="page-title">My Recipes</h1>
+            <p class="my-recipes-subtitle">
+                Manage the recipes you created, check their approval status, and edit them when needed.
+            </p>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Message))
         {
-            <div class="col-md-4 mb-4">
-                <div class="card recipe-card h-100">
-                    @if (!string.IsNullOrWhiteSpace(recipe.ImageUrl))
-                    {
-                        <img src="@recipe.ImageUrl" class="card-img-top" alt="@recipe.Title" />
-                    }
-                    else
-                    {
-                        <div class="recipe-card-placeholder d-flex align-items-center justify-content-center">
-                            <span class="text-muted">No image</span>
-                        </div>
-                    }
+            <div class="alert alert-success" data-auto-hide="true">
+                @Model.Message
+            </div>
+        }
 
-                    <div class="card-body">
-                        <h5 class="card-title">@recipe.Title</h5>
-
-                        <div class="mb-2">
-                            <span class="badge-soft">@recipe.Category?.Name</span>
-                            <span class="badge-soft">@recipe.Difficulty?.Name</span>
-                        </div>
-
-                        <p class="recipe-meta mb-2">
-                            Time: @recipe.PreparationTime min
-                        </p>
-
-                        <p class="mb-3">
-                            @if (recipe.IsApproved)
+        @if (Model.Recipes.Any())
+        {
+            <div class="my-recipes-grid">
+                @foreach (var recipe in Model.Recipes)
+                {
+                    <div class="manage-recipe-card">
+                        <a asp-page="/RecipeDetails" asp-route-id="@recipe.Id" class="manage-recipe-image-link">
+                            @if (!string.IsNullOrWhiteSpace(recipe.ImageUrl))
                             {
-                                <span class="badge bg-success">Approved</span>
+                                <img src="@recipe.ImageUrl" class="manage-recipe-image" alt="@recipe.Title" />
                             }
                             else
                             {
-                                <span class="badge bg-warning text-dark">Pending approval</span>
+                                <div class="manage-recipe-image manage-recipe-placeholder">
+                                    <span>No image</span>
+                                </div>
                             }
-                        </p>
+                        </a>
 
-                        <div class="d-grid gap-2">
-                            <a asp-page="/EditRecipe" asp-route-id="@recipe.Id" class="btn btn-main">
-                                Edit Recipe
-                            </a>
+                        <div class="manage-recipe-body">
+                            <div class="manage-recipe-top">
+                                <a asp-page="/RecipeDetails" asp-route-id="@recipe.Id" class="manage-recipe-title-link">
+                                    <h3 class="manage-recipe-title">@recipe.Title</h3>
+                                </a>
 
-                            <form method="post" asp-page-handler="Delete">
-                                <input type="hidden" name="recipeId" value="@recipe.Id" />
-                                <button type="submit" class="btn btn-outline-danger w-100">
-                                    Delete Recipe
-                                </button>
-                            </form>
+                                @if (recipe.IsApproved)
+                                {
+                                    <span class="status-chip approved">Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="status-chip pending">Pending</span>
+                                }
+                            </div>
+
+                            <div class="manage-recipe-meta">
+                                @if (recipe.Category != null && !string.IsNullOrWhiteSpace(recipe.Category.Name))
+                                {
+                                    <span>@recipe.Category.Name</span>
+                                }
+
+                                <span class="meta-dot">•</span>
+
+                                @if (recipe.Difficulty != null && !string.IsNullOrWhiteSpace(recipe.Difficulty.Name))
+                                {
+                                    <span>@recipe.Difficulty.Name</span>
+                                }
+
+                                <span class="meta-dot">•</span>
+                                <span>@recipe.PreparationTime min</span>
+                            </div>
+
+                            <div class="manage-recipe-actions">
+                                <a asp-page="/EditRecipe" asp-route-id="@recipe.Id" class="btn btn-main manage-btn">
+                                    Edit Recipe
+                                </a>
+
+                                <form method="post" asp-page-handler="Delete" class="manage-delete-form">
+                                    <input type="hidden" name="recipeId" value="@recipe.Id" />
+                                    <button type="submit" class="btn btn-outline-danger manage-btn">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                You have not created any recipes yet.
             </div>
         }
     </div>
-}
-else
-{
-    <div class="empty-state">
-        You have not created any recipes yet.
-    </div>
-}
+</div>
