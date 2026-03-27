@@ -71,6 +71,11 @@ textarea.create-input {
     display: block;
 }
 
+.image-preview-box .text-muted {
+    font-size: 0.95rem;
+    text-align: center;
+}
+
 .ingredients-section {
     padding-top: 8px;
     border-top: 1px solid #eef0f3;
@@ -80,18 +85,23 @@ textarea.create-input {
     overflow-x: auto;
 }
 
-.ingredients-table thead th {
-    border-bottom: 1px solid #e5e7eb;
-    color: #374151;
-    font-weight: 700;
-    background: #fafaf9;
+.ingredients-table {
+    margin-bottom: 12px;
 }
 
-.ingredients-table td,
-.ingredients-table th {
-    vertical-align: middle;
-    border-color: #eef0f3;
-}
+    .ingredients-table thead th {
+        border-bottom: 1px solid #e5e7eb;
+        color: #374151;
+        font-weight: 700;
+        background: #fafaf9;
+        white-space: nowrap;
+    }
+
+    .ingredients-table td,
+    .ingredients-table th {
+        vertical-align: middle;
+        border-color: #eef0f3;
+    }
 
 .create-actions {
     margin-top: 30px;
@@ -126,5 +136,13 @@ textarea.create-input {
 
     .create-submit-btn {
         width: 100%;
+    }
+
+    .image-preview-box {
+        min-height: 140px;
+    }
+
+    #imagePreview {
+        max-height: 240px;
     }
 }

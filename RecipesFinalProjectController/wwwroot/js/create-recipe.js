@@ -17,17 +17,29 @@ function setupImagePreview() {
 
         if (!file) {
             imagePreview.src = "";
-            imagePreviewContainer.style.display = "none";
+
+            // No Create page escondemos o preview; no Edit pode já existir imagem atual
+            if (!imagePreview.getAttribute("src")) {
+                imagePreviewContainer.style.display = "none";
+            }
+
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function (e) {
             imagePreview.src = e.target.result;
-            imagePreviewContainer.style.display = "block";
+            imagePreview.style.display = "block";
+            imagePreviewContainer.style.display = "flex";
         };
         reader.readAsDataURL(file);
     });
+
+    // Se já existir imagem atual (Edit page), mostramos a caixa
+    if (imagePreview.getAttribute("src") && imagePreview.getAttribute("src").trim() !== "") {
+        imagePreview.style.display = "block";
+        imagePreviewContainer.style.display = "flex";
+    }
 }
 
 function setupCategoryLock() {
@@ -128,9 +140,9 @@ function setupIngredientRowLocks() {
             select.disabled = false;
         };
 
-        newInput.addEventListener("input", syncState);
-        newInput.addEventListener("change", syncState);
-        select.addEventListener("change", syncState);
+        newInput.oninput = syncState;
+        newInput.onchange = syncState;
+        select.onchange = syncState;
 
         syncState();
     });
